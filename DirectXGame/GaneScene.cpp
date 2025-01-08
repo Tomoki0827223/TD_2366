@@ -52,7 +52,6 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
-
 	for (Enemy* enemy : enemies_) {
 		enemy->Update();
 	}
@@ -71,6 +70,15 @@ void GameScene::Update() {
 		return false;
 	});
 
+	// 敵の削除処理を追加
+	enemies_.remove_if([](Enemy* enemy) {
+		if (enemy->IsDead()) {
+			delete enemy;
+			return true;
+		}
+		return false;
+	});
+
 	CheckAllCollisions();
 
 	railCamera_->Update();
@@ -79,6 +87,7 @@ void GameScene::Update() {
 	camera_.matProjection = railCamera_->GetViewProjection().matProjection;
 	camera_.TransferMatrix();
 }
+
 
 void GameScene::Draw() {
 
@@ -209,7 +218,6 @@ void GameScene::UpdateEnemyPopCommands() {
 }
 
 void GameScene::CheckAllCollisions() {
-
 	KamataEngine::Vector3 posA[3]{}, posB[3]{};
 	float radiusA[3] = {0.8f, 2.0f, 0.8f}; // プレイヤーの半径（固定値）
 	float radiusB[3] = {0.8f, 2.0f, 0.8f}; // 敵弾の半径（固定値）
@@ -246,12 +254,10 @@ void GameScene::CheckAllCollisions() {
 #pragma region 自弾と敵キャラの当たり判定
 
 	for (Enemy* enemy : enemies_) {
-
 		// 敵
 		posA[1] = enemy->GetWorldPosition();
 
 		for (PlayerBullet* bullet : playerBullets) {
-
 			posB[1] = bullet->GetWorldPosition();
 			float distanceSquared = (posA[1].x - posB[1].x) * (posA[1].x - posB[1].x) + (posA[1].y - posB[1].y) * (posA[1].y - posB[1].y) + (posA[1].z - posB[1].z) * (posA[1].z - posB[1].z);
 			float combinedRadiusSquared = (radiusA[2] + radiusB[2]) * (radiusA[2] + radiusB[2]);
@@ -259,6 +265,7 @@ void GameScene::CheckAllCollisions() {
 			if (distanceSquared <= combinedRadiusSquared) {
 				enemy->OnCollision();
 				bullet->OnCollision();
+				enemy->SetDead();
 			}
 		}
 	}
@@ -269,7 +276,6 @@ void GameScene::CheckAllCollisions() {
 
 	for (EnemyBullet* bullet : enemyBullets_) {
 		for (PlayerBullet* bullet2 : playerBullets) {
-
 			posA[2] = bullet->GetWorldPosition();
 			posB[2] = bullet2->GetWorldPosition();
 

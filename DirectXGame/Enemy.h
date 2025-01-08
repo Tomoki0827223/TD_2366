@@ -30,16 +30,20 @@ public:
 	void SetPlayer(Player* player) { player_ = player; }
 	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
 
+	// 新しいメソッド
+	void SetDead() { isDead_ = true; }
+	bool IsDead() const { return isDead_; }
+
 	// 発射間隔
 	static const int kFireInterval = 15;
-
-	bool isDead_ = false;
 
 private:
 	KamataEngine::WorldTransform worldtransfrom_;
 	KamataEngine::Model* model_ = nullptr;
 
 	KamataEngine::Model* modelbullet_ = nullptr;
+
+	bool isDead_ = false;
 
 	// 発射タイマー
 	int32_t spawnTimer = 0;
