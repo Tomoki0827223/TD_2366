@@ -18,6 +18,7 @@ public:
 	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera, const KamataEngine::Vector3& pos);
 	void Update();
 	void Draw();
+	
 	~Player();
 	void Attack();
 	// 衝突を検出したら呼び出されるコールバック関数

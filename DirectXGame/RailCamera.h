@@ -18,6 +18,8 @@ public:
 	void Initialize(const KamataEngine::Vector3& pos, const KamataEngine::Vector3& rad);
 	void Update();
 
+	float GetInput(const std::string& inputName);
+
 	Player* target_ = nullptr;
 
 	void setTarget(Player* target) { target_ = target; }
