@@ -1,13 +1,17 @@
 #pragma once
-#include "PlayerBullet.h"
-#include <list>
-#include <3d/Model.h>
-#include <3d/Camera.h>
-#include <KamataEngine.h>
 #include "AABB.h"
+#include "PlayerBullet.h"
+#include "affine.h"
+#include <3d/Camera.h>
+#include <3d/Model.h>
+#include <KamataEngine.h>
+#include <list>
 
-namespace KamataEngine { class Input; };
+namespace KamataEngine {
+class Input;
+};
 
+class Enemy;
 
 class Player {
 public:
@@ -21,23 +25,25 @@ public:
 
 	KamataEngine::Vector3 GetWorldPosition();
 
-	AABB GetAABB();
-
 	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
+
+	// AABBを取得
+	AABB GetAABB();
 
 	static inline const float kWidth = 1.0f;
 	static inline const float kHeight = 1.0f;
 
-private:
-	
-	bool isDead_ = false;
+	void SetEnemy(Enemy* enemy) { enemy_ = enemy; }
 
+	void SetParent(const WorldTransform* parent);
+
+private:
 	KamataEngine::WorldTransform worldtransfrom_;
 
 	KamataEngine::Model* model_ = nullptr;
 
 	KamataEngine::Input* input_ = nullptr;
-	
+
 	KamataEngine::Camera* camera_ = nullptr;
 
 	KamataEngine::Model* modelbullet_ = nullptr;
@@ -45,4 +51,11 @@ private:
 	// 弾
 	std::list<PlayerBullet*> bullets_;
 
+	bool isDead_ = false;
+	bool isParry_ = false;
+
+	Enemy* enemy_ = nullptr;
+
+	// 発射タイマー
+	int32_t spawnTimer = 0;
 };

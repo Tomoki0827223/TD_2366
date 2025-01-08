@@ -1,11 +1,14 @@
 #pragma once
+#include "EnemyBullet.h"
+#include "GaneScene.h"
+#include "affine.h"
+#include <3d/Camera.h>
 #include <3d/Model.h>
 #include <3d/WorldTransform.h>
-#include <3d/Camera.h>
-#include "EnemyBullet.h"
-#include "affine.h"
+#include <cassert>
 
 class Player;
+class GameScene;
 
 enum class Phase {
 	Approach, // 接近する
@@ -14,42 +17,37 @@ enum class Phase {
 
 class Enemy {
 public:
-
-	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera, const KamataEngine::Vector3& pos);
+	void Initialize(KamataEngine::Model* model, const KamataEngine::Vector3& pos);
 	void Update();
-	void OnCollision();
-	void Draw();
+	void Draw(const KamataEngine::Camera& camera);
 	~Enemy();
 	void Fire();
+
+	void OnCollision();
 
 	KamataEngine::Vector3 GetWorldPosition();
 
 	void SetPlayer(Player* player) { player_ = player; }
-
-	// 弾リストを取得
-	const std::list<EnemyBullet*>& GetBullets() const { return bullets_; }
+	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
 
 	// 発射間隔
-	static const int kFireInterval = 25;
+	static const int kFireInterval = 15;
+
+	bool isDead_ = false;
 
 private:
-
 	KamataEngine::WorldTransform worldtransfrom_;
 	KamataEngine::Model* model_ = nullptr;
-	KamataEngine::Camera* camera_ = nullptr;
 
 	KamataEngine::Model* modelbullet_ = nullptr;
-
-	// 弾
-	std::list<EnemyBullet*> bullets_;
 
 	// 発射タイマー
 	int32_t spawnTimer = 0;
 
 	Player* player_ = nullptr;
+	GameScene* gameScene_ = nullptr;
 
 	Phase phase_ = Phase::Approach;
 
 	Phase Bulletphase_ = Phase::Approach;
-
 };

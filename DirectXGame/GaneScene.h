@@ -1,8 +1,11 @@
 #pragma once
+#include "AABB.h"
 #include "Enemy.h"
 #include "KamataEngine.h"
 #include "Player.h"
+#include "RailCamera.h"
 #include "Skydome.h"
+#include <sstream>
 using namespace KamataEngine;
 
 class GameScene {
@@ -13,8 +16,19 @@ public:
 	void Initialize();
 	void Update();
 	void Draw();
-
+	// 衝突判定と応答
 	void CheckAllCollisions();
+
+	// 弾を追加
+	void AddEnemyBullet(EnemyBullet* enemyBullet);
+	const std::list<EnemyBullet*>& GetEnemyBullets() const { return enemyBullets_; }
+
+	void LoadEnemyPopData();
+	void UpdateEnemyPopCommands();
+	void EnemySpawn(const Vector3& position);
+
+	int32_t timer = 0;
+	bool timerflag = true;
 
 private:
 	DirectXCommon* dxCommon_ = nullptr;
@@ -22,24 +36,30 @@ private:
 	Audio* audio_ = nullptr;
 
 	Player* player_ = nullptr;
-	Enemy* enemy_ = nullptr;
-	Vector3 playerPos = {};
-	Vector3 enemyPos = {0, 3, 100};
+	// Enemy* enemy_ = nullptr;
+	Skydome* skydome_ = nullptr;
+	Model* modelSkydome_ = nullptr;
+	RailCamera* railCamera_ = nullptr;
+
+	Vector3 playerPos = {0, 0, 25};
+	Vector3 RailCamerPos = {0, 0, 0};
+	Vector3 RailCamerRad = {0, 0, 0};
 
 	Model* modelPlayer_ = nullptr;
 	Model* modelEnemy_ = nullptr;
 
-	// std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
+	// カメラ
+	WorldTransform worldTransform_;
 	Camera camera_;
 
-	bool isDebugCameraActive_ = false;
-	// デバックカメラ
-	DebugCamera* debugCamera_ = nullptr;
+	Vector3 railcameraPos = {0, 0, 0};
+	Vector3 railcameraRad = {0, 0, 0};
 
-	Skydome* skydome_ = nullptr;
-	Model* modelSkydome_ = nullptr;
+	// 敵弾リストを追加
+	std::list<EnemyBullet*> enemyBullets_;
 
-	// 敵が消える時間を管理する変数
-	int enemyDisappearTimer_ = 0;
-	const int kEnemyDisappearTime = 180; // 敵が消える時間（フレーム数）
+	// 敵発生コマンド
+	std::stringstream enemyPopCommands;
+
+	std::list<Enemy*> enemies_;
 };

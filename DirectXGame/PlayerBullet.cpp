@@ -1,10 +1,8 @@
 #include "PlayerBullet.h"
-#include <cassert>
 #include "base/TextureManager.h"
+#include <cassert>
 
-PlayerBullet::~PlayerBullet() { 
-	model_ = nullptr;
-}
+PlayerBullet::~PlayerBullet() { model_ = nullptr; }
 
 void PlayerBullet::Initialize(KamataEngine::Model* model, const KamataEngine::Vector3& position, const KamataEngine::Vector3& velocity) {
 
@@ -13,7 +11,6 @@ void PlayerBullet::Initialize(KamataEngine::Model* model, const KamataEngine::Ve
 	worldtransfrom_.translation_ = position;
 	worldtransfrom_.Initialize();
 	velocity_ = velocity;
-
 }
 
 // ワールド座標を取得
@@ -40,7 +37,6 @@ void PlayerBullet::Update() {
 	worldtransfrom_.translation_.z += velocity_.z;
 
 	worldtransfrom_.UpdateMatarix();
-
 }
 
 void PlayerBullet::OnCollision() { isDead_ = true; }
@@ -49,5 +45,4 @@ void PlayerBullet::Draw(const KamataEngine::Camera& camera) {
 
 	// モデルの描画
 	model_->Draw(worldtransfrom_, camera);
-
 }

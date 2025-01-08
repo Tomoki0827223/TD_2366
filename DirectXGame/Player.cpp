@@ -1,10 +1,10 @@
 #include "Player.h"
-#include <cassert>
+#include "Enemy.h"
 #include <algorithm>
+#include <cassert>
 
 Player::~Player() {
-	//model_ = nullptr;
-	//camera_ = nullptr;
+
 	delete modelbullet_;
 	for (PlayerBullet* bullet : bullets_) {
 		delete bullet;
@@ -17,26 +17,38 @@ void Player::Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera
 	model_ = model;
 	camera_ = camera;
 	modelbullet_ = KamataEngine::Model::CreateFromOBJ("TamaPlayer", true);
+
 	worldtransfrom_.translation_ = pos;
 	input_ = KamataEngine::Input::GetInstance();
 	worldtransfrom_.Initialize();
-
 }
+
+void Player::OnCollision() { isDead_ = true; }
 
 void Player::Attack() {
 
 	if (input_->PushKey(DIK_SPACE)) {
 
-		KamataEngine::Vector3 moveBullet = {0,0,0};
+		assert(enemy_);
 
-		moveBullet = worldtransfrom_.translation_;
+		KamataEngine::Vector3 moveBullet = GetWorldPosition();
 
 		// 弾の速度
-		const float kBulletSpeed = 1.0f;
-		KamataEngine::Vector3 velocity(0, 0, kBulletSpeed);
+		const float kBulletSpeed = -3.0f;
+
+		KamataEngine::Vector3 velocity(0, 0, 0);
+		// KamataEngine::Vector3 velocity(0, 0, kBulletSpeed);
+
+		KamataEngine::Vector3 enemyWorldtransform = enemy_->GetWorldPosition();
+		KamataEngine::Vector3 playerWorldtransform = GetWorldPosition();
+		KamataEngine::Vector3 homingBullet = playerWorldtransform - enemyWorldtransform;
+		homingBullet = Normalize(homingBullet);
+		velocity.x += kBulletSpeed * homingBullet.x;
+		velocity.y += kBulletSpeed * homingBullet.y;
+		velocity.z += kBulletSpeed * homingBullet.z;
 
 		// 速度ベクトルを自機の向きに合わせて回転させる
-		velocity = KamataEngine::MathUtility::TransformNormal(velocity, worldtransfrom_.matWorld_);
+		// velocity = KamataEngine::MathUtility::TransformNormal(velocity, worldtransfrom_.matWorld_);
 
 		// 弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
@@ -44,13 +56,13 @@ void Player::Attack() {
 
 		// 弾を登録する
 		bullets_.push_back(newBullet);
+
+		isParry_ = false;
 	}
 }
 
-void Player::OnCollision() { isDead_ = true; }
-
 // ワールド座標を取得
-KamataEngine::Vector3 Player::GetWorldPosition() { 
+KamataEngine::Vector3 Player::GetWorldPosition() {
 
 	// ワールド座標を入れる変数
 	KamataEngine::Vector3 worldPos;
@@ -73,9 +85,10 @@ AABB Player::GetAABB() {
 	return aabb;
 }
 
+void Player::SetParent(const WorldTransform* parent) { worldtransfrom_.parent_ = parent; }
+
 void Player::Update() {
 
-	// キャラクターの攻撃処理
 	Attack();
 
 	// 弾更新
@@ -121,31 +134,23 @@ void Player::Update() {
 		worldtransfrom_.rotation_.y -= kRotSpeed;
 	}
 
-
 	worldtransfrom_.translation_.x += move.x;
 	worldtransfrom_.translation_.y += move.y;
 
-	const float kMoveLimitX = 30;
-	const float kMoveLimitY = 15;
-
-	worldtransfrom_.translation_.x = std::clamp(worldtransfrom_.translation_.x, -kMoveLimitX, kMoveLimitX);
-	worldtransfrom_.translation_.y = std::clamp(worldtransfrom_.translation_.y, -kMoveLimitY, kMoveLimitY);
-
-	ImGui::Begin("Setmove");
-	ImGui::SliderFloat("Move X", &worldtransfrom_.translation_.x, -1.0f, 1.0f);
-	ImGui::SliderFloat("Move Y", &worldtransfrom_.translation_.y, -1.0f, 1.0f);
-	ImGui::End();
+	// ImGui::Begin("Setmove");
+	// ImGui::SliderFloat("Move X", &worldtransfrom_.translation_.x, -1.0f, 1.0f);
+	// ImGui::SliderFloat("Move Y", &worldtransfrom_.translation_.y, -1.0f, 1.0f);
+	// ImGui::End();
 
 	worldtransfrom_.UpdateMatarix();
-
 }
 
-void Player::Draw() { 
+void Player::Draw() {
 
 	model_->Draw(worldtransfrom_, *camera_);
 
 	// 弾描画
 	for (PlayerBullet* bullet : bullets_) {
-	bullet->Draw(*camera_);
+		bullet->Draw(*camera_);
 	}
 }

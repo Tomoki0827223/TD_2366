@@ -1,19 +1,11 @@
 #include "Enemy.h"
 #include "Player.h"
-#include <iostream>
 
-Enemy::~Enemy() {
+Enemy::~Enemy() { delete modelbullet_; }
 
-	delete modelbullet_;
-	for (EnemyBullet* bullet : bullets_) {
-		delete bullet;
-	}
-}
-
-void Enemy::Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera, const KamataEngine::Vector3& pos) {
+void Enemy::Initialize(KamataEngine::Model* model, const KamataEngine::Vector3& pos) {
 	assert(model);
 	model_ = model;
-	camera_ = camera;
 	modelbullet_ = KamataEngine::Model::CreateFromOBJ("Tama", true);
 	worldtransfrom_.translation_ = pos;
 	worldtransfrom_.Initialize();
@@ -31,7 +23,7 @@ KamataEngine::Vector3 Enemy::GetWorldPosition() {
 	return worldPos;
 }
 
-void Enemy::OnCollision() {}
+void Enemy::OnCollision() { isDead_ = true; }
 
 void Enemy::Fire() {
 
@@ -61,69 +53,41 @@ void Enemy::Fire() {
 		newBullet->Initialize(modelbullet_, moveBullet, velocity);
 
 		// 弾を登録する
-		bullets_.push_back(newBullet);
+		gameScene_->AddEnemyBullet(newBullet);
 
 		spawnTimer = kFireInterval;
 	}
 }
 
 void Enemy::Update() {
-	if (player_ != nullptr) {
-		Fire();
-	} else {
-		// player_ が設定されていない場合の処理
-		// 例えば、ログを出力するなど
-		std::cerr << "Error: player_ is nullptr" << std::endl;
-	}
 
-	// 弾更新
-	for (EnemyBullet* bullet : bullets_) {
-		bullet->Update();
-	}
+	Fire();
 
-	// デスフラグの立った弾を削除
-	bullets_.remove_if([](EnemyBullet* bullet) {
-		if (bullet->IsDead()) {
-			delete bullet;
-			return true;
-		}
-		return false;
-	});
+	// キャラクターの移動ベクトル
+	KamataEngine::Vector3 move = {0, 0, 0};
+	// 接近
+	KamataEngine::Vector3 accessSpeed = {-0.1f, -0.1f, -0.1f};
+	// 離脱
+	KamataEngine::Vector3 eliminationSpeed = {-0.3f, -0.3f, -0.3f};
 
-	//// キャラクターの移動ベクトル
-	//KamataEngine::Vector3 move = {0, 0, 0};
-	//// 接近
-	//KamataEngine::Vector3 accessSpeed = {0.1f, 0.1f, 0.1f};
-	//// 離脱
-	//KamataEngine::Vector3 eliminationSpeed = {0.3f, 0.3f, 0.3f};
+	// switch (phase_) {
+	// case Phase::Approach:
+	// default:
+	//     // 移動(ベクトルを加算)
+	//     worldtransfrom_.translation_.z -= accessSpeed.z;
+	//     // 規定の位置に到達したら離脱
+	//     if (worldtransfrom_.translation_.z < 0.0f) {
+	//         phase_ = Phase::Leave;
+	//     }
+	//     break;
+	// case Phase::Leave:
+	//     // 移動(ベクトルを加算)
+	//     worldtransfrom_.translation_.y += eliminationSpeed.y;
+	//     break;
 
-	//// フェーズごとの動作
-	//switch (phase_) {
-	//case Phase::Approach:
-	//	// 移動(ベクトルを加算)
-	//	worldtransfrom_.translation_.z -= accessSpeed.z;
-	//	// 規定の位置に到達したら離脱
-	//	if (worldtransfrom_.translation_.z < 0.0f) {
-	//		phase_ = Phase::Leave;
-	//	}
-	//	break;
-	//case Phase::Leave:
-	//	// 移動(ベクトルを加算)
-	//	worldtransfrom_.translation_.y += eliminationSpeed.y;
-	//	break;
-	//default:
-	//	break;
 	//}
 
 	worldtransfrom_.UpdateMatarix();
 }
 
-
-void Enemy::Draw() {
-
-	model_->Draw(worldtransfrom_, *camera_);
-
-	for (EnemyBullet* bullet : bullets_) {
-		bullet->Draw(*camera_);
-	}
-}
+void Enemy::Draw(const KamataEngine::Camera& camera) { model_->Draw(worldtransfrom_, camera); }

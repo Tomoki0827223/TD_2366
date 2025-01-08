@@ -19,7 +19,6 @@ public:
 	KamataEngine::Vector3 GetWorldPosition();
 
 private:
-
 	KamataEngine::WorldTransform worldtransfrom_;
 	KamataEngine::Model* model_ = nullptr;
 	KamataEngine::Vector3 velocity_;

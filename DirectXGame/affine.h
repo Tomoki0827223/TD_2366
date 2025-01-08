@@ -1,8 +1,8 @@
 #pragma once
+#include <KamataEngine.h>
 #include <assert.h>
 #include <cmath>
 #include <stdio.h>
-#include <KamataEngine.h>
 using namespace KamataEngine;
 
 Matrix4x4 MatrixMultipry(const Matrix4x4& matrix1, const Matrix4x4& matrix2);
@@ -28,3 +28,5 @@ Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, f
 
 // 透視投影行列
 Matrix4x4 MakePerspectiveMatrix(float fovY, float aspectRatio, float nearClip, float farClip);
+
+Matrix4x4 Inverse(const Matrix4x4& m);

@@ -16,7 +16,6 @@ KamataEngine::Vector3 EnemyBullet::GetWorldPosition() {
 	return worldPos;
 }
 
-
 void EnemyBullet::Initialize(KamataEngine::Model* model, const KamataEngine::Vector3& position, const KamataEngine::Vector3& velocity) {
 	assert(model);
 	model_ = model;
@@ -36,7 +35,6 @@ void EnemyBullet::Update() {
 	worldtransfrom_.translation_.z += velocity_.z;
 
 	worldtransfrom_.UpdateMatarix();
-
 }
 
 void EnemyBullet::OnCollision() { isDead_ = true; }
@@ -45,5 +43,4 @@ void EnemyBullet::Draw(const KamataEngine::Camera& camera) {
 
 	// モデルの描画
 	model_->Draw(worldtransfrom_, camera);
-
 }
