@@ -31,7 +31,7 @@ public:
 	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
 
 	// 発射間隔
-	static const int kFireInterval = 15;
+	static const int kFireInterval = 30;
 
 	bool isDead_ = false;
 
