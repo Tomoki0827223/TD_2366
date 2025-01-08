@@ -38,4 +38,8 @@ private:
 
 	Skydome* skydome_ = nullptr;
 	Model* modelSkydome_ = nullptr;
+
+	// 敵が消える時間を管理する変数
+	int enemyDisappearTimer_ = 0;
+	const int kEnemyDisappearTime = 180; // 敵が消える時間（フレーム数）
 };

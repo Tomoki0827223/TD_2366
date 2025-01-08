@@ -11,6 +11,7 @@ GameScene::~GameScene() {
 	delete enemy_;
 	delete debugCamera_;
 	delete skydome_;
+	delete enemy_;
 }
 
 void GameScene::Initialize() {
@@ -45,31 +46,50 @@ void GameScene::Initialize() {
 
 	// 敵キャラに自キャラのアドレスを渡す
 	enemy_->SetPlayer(player_);
+
+	// enemy_ が正しく初期化されているか確認
+	assert(enemy_ != nullptr);
+	assert(player_ != nullptr);
 }
+
 
 void GameScene::Update() {
-	player_->Update();
-	enemy_->Update();
-	debugCamera_->Update();
-	CheckAllCollisions();
 
-#ifdef _DEBUG
-
-	if (input_->TriggerKey(DIK_V)) {
-		isDebugCameraActive_ = !isDebugCameraActive_;
+	if (player_ != nullptr) {
+		player_->Update();
 	}
-#endif
-
-	if (isDebugCameraActive_) {
-		debugCamera_->Update();
-		camera_.matView = debugCamera_->GetCamera().matView;
-		camera_.matProjection = debugCamera_->GetCamera().matProjection;
-		camera_.TransferMatrix();
-
-	} else {
-		camera_.UpdateMatrix();
+	if (enemy_ != nullptr) {
+		enemy_->Update();
 	}
+
+    debugCamera_->Update();
+    CheckAllCollisions();
+
+    // 敵が消える時間を管理
+    if (enemyDisappearTimer_ > 0) {
+        enemyDisappearTimer_--;
+        if (enemyDisappearTimer_ == 0) {
+            // 敵を消す処理
+            enemy_ = nullptr;
+        }
+    }
+
+//#ifdef _DEBUG
+//    if (input_->TriggerKey(DIK_V)) {
+//        isDebugCameraActive_ = !isDebugCameraActive_;
+//    }
+//#endif
+//
+//    if (isDebugCameraActive_) {
+//        debugCamera_->Update();
+//        camera_.matView = debugCamera_->GetCamera().matView;
+//        camera_.matProjection = debugCamera_->GetCamera().matProjection;
+//        camera_.TransferMatrix();
+//    } else {
+//        camera_.UpdateMatrix();
+//    }
 }
+
 
 void GameScene::Draw() {
 
@@ -87,7 +107,13 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 
 	player_->Draw();
-	enemy_->Draw();
+	//enemy_->Draw();
+	
+	if (enemy_ != nullptr) {
+		enemy_->Draw();
+	}
+
+	
 	skydome_->Draw();
 
 	/// </summary>
@@ -141,7 +167,6 @@ void GameScene::CheckAllCollisions() {
 	posA[1] = enemy_->GetWorldPosition();
 
 	for (PlayerBullet* bullet : playerBullets) {
-
 		posB[1] = bullet->GetWorldPosition();
 		float distanceSquared = (posA[1].x - posB[1].x) * (posA[1].x - posB[1].x) + (posA[1].y - posB[1].y) * (posA[1].y - posB[1].y) + (posA[1].z - posB[1].z) * (posA[1].z - posB[1].z);
 		float combinedRadiusSquared = (radiusA[2] + radiusB[2]) * (radiusA[2] + radiusB[2]);
@@ -149,6 +174,7 @@ void GameScene::CheckAllCollisions() {
 		if (distanceSquared <= combinedRadiusSquared) {
 			enemy_->OnCollision();
 			bullet->OnCollision();
+			enemyDisappearTimer_ = kEnemyDisappearTime; // 敵が消える時間を設定
 		}
 	}
 

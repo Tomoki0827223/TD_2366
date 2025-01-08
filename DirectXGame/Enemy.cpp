@@ -1,5 +1,6 @@
 #include "Enemy.h"
 #include "Player.h"
+#include <iostream>
 
 Enemy::~Enemy() {
 
@@ -67,8 +68,13 @@ void Enemy::Fire() {
 }
 
 void Enemy::Update() {
-
-	Fire();
+	if (player_ != nullptr) {
+		Fire();
+	} else {
+		// player_ が設定されていない場合の処理
+		// 例えば、ログを出力するなど
+		std::cerr << "Error: player_ is nullptr" << std::endl;
+	}
 
 	// 弾更新
 	for (EnemyBullet* bullet : bullets_) {
@@ -84,68 +90,34 @@ void Enemy::Update() {
 		return false;
 	});
 
-	// キャラクターの移動ベクトル
-	KamataEngine::Vector3 move = {0, 0, 0};
-	// 接近
-	KamataEngine::Vector3 accessSpeed = {0.1f, 0.1f, 0.1f};
-	// 離脱
-	KamataEngine::Vector3 eliminationSpeed = {0.3f, 0.3f, 0.3f};
-
-	/*/
-	switch (phase_) {
-	case Phase::Approach:
-	default:
-	    // 移動(ベクトルを加算)
-	    worldtransfrom_.translation_.z -= accessSpeed.z;
-	    // 規定の位置に到達したら離脱
-	    if (worldtransfrom_.translation_.z < 0.0f) {
-	        phase_ = Phase::Leave;
-	    }
-	    break;
-	case Phase::Leave:
-	    // 移動(ベクトルを加算)
-	    worldtransfrom_.translation_.y += eliminationSpeed.y;
-	    break;
-
-	}
-	/*/
-
 	//// キャラクターの移動ベクトル
-	// KamataEngine::Vector3 move = {0, 0, 0};
+	//KamataEngine::Vector3 move = {0, 0, 0};
 	//// 接近
-	// KamataEngine::Vector3 accessSpeed = {0.1f,0.1f,0.1f};
+	//KamataEngine::Vector3 accessSpeed = {0.1f, 0.1f, 0.1f};
 	//// 離脱
-	// KamataEngine::Vector3 eliminationSpeed = {0.5f, 0.3f, 0.0f};
+	//KamataEngine::Vector3 eliminationSpeed = {0.3f, 0.3f, 0.3f};
 
 	//// フェーズごとの動作
-	// switch (phase_) {
-	// case Phase::Approach:
-	//	// Z方向へ近づく
-	//	worldtransfrom_.translation_.z -= 0.3f;
-
-	//	// Z位置が閾値に達したらフェーズをLeaveに変更
-
-	//	if (worldtransfrom_.translation_.z <= -2.0f) {
+	//switch (phase_) {
+	//case Phase::Approach:
+	//	// 移動(ベクトルを加算)
+	//	worldtransfrom_.translation_.z -= accessSpeed.z;
+	//	// 規定の位置に到達したら離脱
+	//	if (worldtransfrom_.translation_.z < 0.0f) {
 	//		phase_ = Phase::Leave;
 	//	}
 	//	break;
-
-	// case Phase::Leave:
-	//	// 離れる動作（例えばZを増加させる）
-	//	worldtransfrom_.translation_.y += 0.03f;
-
-	//	// Z位置が一定以上になったらApproachに戻す
-	//	if (worldtransfrom_.translation_.z >= 5.0f) {
-	//		phase_ = Phase::Approach;
-	//	}
+	//case Phase::Leave:
+	//	// 移動(ベクトルを加算)
+	//	worldtransfrom_.translation_.y += eliminationSpeed.y;
 	//	break;
-
-	// default:
+	//default:
 	//	break;
-	// }
+	//}
 
 	worldtransfrom_.UpdateMatarix();
 }
+
 
 void Enemy::Draw() {
 
