@@ -65,15 +65,6 @@ void GameScene::Update() {
     debugCamera_->Update();
     CheckAllCollisions();
 
-    // 敵が消える時間を管理
-    if (enemyDisappearTimer_ > 0) {
-        enemyDisappearTimer_--;
-        if (enemyDisappearTimer_ == 0) {
-            // 敵を消す処理
-            enemy_ = nullptr;
-        }
-    }
-
 //#ifdef _DEBUG
 //    if (input_->TriggerKey(DIK_V)) {
 //        isDebugCameraActive_ = !isDebugCameraActive_;
@@ -174,7 +165,18 @@ void GameScene::CheckAllCollisions() {
 		if (distanceSquared <= combinedRadiusSquared) {
 			enemy_->OnCollision();
 			bullet->OnCollision();
+			
 			enemyDisappearTimer_ = kEnemyDisappearTime; // 敵が消える時間を設定
+
+
+			// 敵が消える時間を管理
+			if (enemyDisappearTimer_ > 0) {
+				enemyDisappearTimer_--;
+				if (enemyDisappearTimer_ == 0) {
+					// 敵を消す処理
+					enemy_ = nullptr;
+				}
+			}
 		}
 	}
 
