@@ -47,8 +47,9 @@ private:
 	Model* modelPlayer_ = nullptr;
 	Model* modelEnemy_ = nullptr;
 	Model* modelSkydome_ = nullptr;
-	Model* modelbullet_ = nullptr;
+	Model* modelEnemyBullet_ = nullptr;
 	Model* modelPlayerbullet_ = nullptr;
+	Model* modelPlayerbullet2_ = nullptr;
 
 	// カメラ
 	WorldTransform worldTransform_;

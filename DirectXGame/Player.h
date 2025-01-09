@@ -1,62 +1,55 @@
 #pragma once
-#include "AABB.h"
-#include "PlayerBullet.h"
-#include "affine.h"
 #include <3d/Camera.h>
+#include <input/Input.h>
 #include <3d/Model.h>
-#include <KamataEngine.h>
-#include <list>
-
-namespace KamataEngine {
-class Input;
-};
+#include <3d/WorldTransform.h>
+#include "PlayerBullet.h"
+#include "PlayerBullet2.h"
+#include "AABB.h"
+#include <vector>
+#include <algorithm>
+#include <cassert>
 
 class Enemy;
 
+
 class Player {
 public:
-	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera, KamataEngine::Model* TamaModel, const KamataEngine::Vector3& pos);
-	void Update();
-	void Draw();
-	
+	enum class BulletType { Normal, Special, Type2 };
+
 	~Player();
-	void Attack();
-	// 衝突を検出したら呼び出されるコールバック関数
+	void Initialize(
+	    KamataEngine::Model* model, KamataEngine::Camera* camera, KamataEngine::Model* normalBulletModel, KamataEngine::Model* specialBulletModel, KamataEngine::Model* type2BulletModel,
+	    const KamataEngine::Vector3& position);
 	void OnCollision();
-
+	void Update();
+	void Draw(const KamataEngine::Camera& camera);
+	void SwitchBulletType(BulletType type);
 	KamataEngine::Vector3 GetWorldPosition();
-
-	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
-
-	// AABBを取得
 	AABB GetAABB();
+	void SetParent(const KamataEngine::WorldTransform* parent);
 
-	static inline const float kWidth = 1.0f;
-	static inline const float kHeight = 1.0f;
-
+    // 新しいメソッド
 	void SetEnemy(Enemy* enemy) { enemy_ = enemy; }
 
-	void SetParent(const WorldTransform* parent);
-
 private:
-	KamataEngine::WorldTransform worldtransfrom_;
-
-	KamataEngine::Model* model_ = nullptr;
-
-	KamataEngine::Model* modelbullet_ = nullptr;
-
-	KamataEngine::Input* input_ = nullptr;
-
-	KamataEngine::Camera* camera_ = nullptr;
-
-	// 弾
-	std::list<PlayerBullet*> bullets_;
-
-	bool isDead_ = false;
-	bool isParry_ = false;
+	void Attack();
 
 	Enemy* enemy_ = nullptr;
 
-	// 発射タイマー
-	int32_t spawnTimer = 0;
+	KamataEngine::Model* model_ = nullptr;
+	KamataEngine::Camera* camera_ = nullptr;
+	KamataEngine::Model* normalBulletModel_ = nullptr;
+	KamataEngine::Model* specialBulletModel_ = nullptr;
+	KamataEngine::Model* type2BulletModel_ = nullptr;
+	KamataEngine::Input* input_ = nullptr;
+	KamataEngine::WorldTransform worldtransform_;
+	std::vector<PlayerBullet*> bullets_;
+	std::vector<PlayerBullet2*> bullets2_;
+	BulletType currentBulletType_ = BulletType::Normal;
+	bool isDead_ = false;
+
+	// AABBの幅と高さを定義
+	static constexpr float kWidth = 1.0f;
+	static constexpr float kHeight = 1.0f;
 };
