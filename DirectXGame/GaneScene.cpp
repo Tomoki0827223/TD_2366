@@ -12,6 +12,8 @@ GameScene::~GameScene() {
 	delete player_;
 	delete skydome_;
 	delete railCamera_;
+	delete modelbullet_;
+	delete modelPlayerbullet_;
 
 	for (EnemyBullet* bullet : enemyBullets_) {
 		delete bullet;
@@ -60,6 +62,7 @@ void GameScene::Update() {
 		enemy->Update();
 	}
 
+
 	UpdateEnemyPopCommands();
 
 	for (EnemyBullet* bullet : enemyBullets_) {
@@ -105,8 +108,7 @@ void GameScene::Draw() {
 	dxCommon_->ClearDepthBuffer();
 	KamataEngine::Model::PreDraw(commandList);
 
-	/// <summary>
-	/// ここに3Dオブジェクトの描画処理を追加できる
+
 
 	player_->Draw();
 
@@ -114,19 +116,21 @@ void GameScene::Draw() {
 		enemy->Draw(camera_);
 	}
 
-	skydome_->Draw();
+	skydome_->Draw(camera_);
 	for (EnemyBullet* bullet : enemyBullets_) {
 		bullet->Draw(camera_);
 	}
 
-	/// </summary>
 
 	KamataEngine::Model::PostDraw();
 	Sprite::PreDraw(commandList);
 	Sprite::PostDraw();
 }
 
-void GameScene::AddEnemyBullet(EnemyBullet* bullet) { enemyBullets_.push_back(bullet); }
+void GameScene::AddEnemyBullet(EnemyBullet* bullet) 
+{ 
+	enemyBullets_.push_back(bullet);
+}
 
 void GameScene::EnemySpawn(const Vector3& position) {
 

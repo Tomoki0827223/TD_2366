@@ -50,7 +50,7 @@ float RailCamera::GetInput(const std::string& inputName) {
 
 	if (keyMap.find(inputName) != keyMap.end()) {
 		if (GetAsyncKeyState(keyMap[inputName]) & 0x8000) {
-			return 0.11f; // キーが押されている場合
+			return 1.0f; // キーが押されている場合
 		}
 	}
 

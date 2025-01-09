@@ -59,6 +59,36 @@ Matrix4x4 MakeRotateZMatrix(float angle) {
 	return matrix;
 }
 
+Matrix4x4 CreateRotationY(float angle) {
+	Matrix4x4 rotationMatrix;
+
+	float cosAngle = std::cos(angle);
+	float sinAngle = std::sin(angle);
+
+	rotationMatrix.m[0][0] = cosAngle;
+	rotationMatrix.m[0][1] = 0.0f;
+	rotationMatrix.m[0][2] = -sinAngle;
+	rotationMatrix.m[0][3] = 0.0f;
+
+	rotationMatrix.m[1][0] = 0.0f;
+	rotationMatrix.m[1][1] = 1.0f;
+	rotationMatrix.m[1][2] = 0.0f;
+	rotationMatrix.m[1][3] = 0.0f;
+
+	rotationMatrix.m[2][0] = sinAngle;
+	rotationMatrix.m[2][1] = 0.0f;
+	rotationMatrix.m[2][2] = cosAngle;
+	rotationMatrix.m[2][3] = 0.0f;
+
+	rotationMatrix.m[3][0] = 0.0f;
+	rotationMatrix.m[3][1] = 0.0f;
+	rotationMatrix.m[3][2] = 0.0f;
+	rotationMatrix.m[3][3] = 1.0f;
+
+	return rotationMatrix;
+}
+
+
 Vector3 Transform(const Vector3& vec, const Matrix4x4& mat) {
 	Vector3 result;
 

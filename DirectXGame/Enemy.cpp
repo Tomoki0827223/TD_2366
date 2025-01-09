@@ -71,22 +71,22 @@ void Enemy::Update() {
 	// 離脱
 	KamataEngine::Vector3 eliminationSpeed = {-0.3f, -0.3f, -0.3f};
 
-	// switch (phase_) {
-	// case Phase::Approach:
-	// default:
-	//     // 移動(ベクトルを加算)
-	//     worldtransfrom_.translation_.z -= accessSpeed.z;
-	//     // 規定の位置に到達したら離脱
-	//     if (worldtransfrom_.translation_.z < 0.0f) {
-	//         phase_ = Phase::Leave;
-	//     }
-	//     break;
-	// case Phase::Leave:
-	//     // 移動(ベクトルを加算)
-	//     worldtransfrom_.translation_.y += eliminationSpeed.y;
-	//     break;
+	 switch (phase_) {
+	 case Phase::Approach:
+	 default:
+	     // 移動(ベクトルを加算)
+	     worldtransfrom_.translation_.z += accessSpeed.z;
+	     // 規定の位置に到達したら離脱
+	     if (worldtransfrom_.translation_.z < 0.0f) {
+	         phase_ = Phase::Leave;
+	     }
+	     break;
+	 case Phase::Leave:
+	     // 移動(ベクトルを加算)
+	     worldtransfrom_.translation_.y += eliminationSpeed.y;
+	     break;
 
-	//}
+	}
 
 	worldtransfrom_.UpdateMatarix();
 }

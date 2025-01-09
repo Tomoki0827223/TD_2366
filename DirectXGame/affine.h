@@ -11,6 +11,8 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Ve
 
 Matrix4x4 MakeRotateZMatrix(float angle);
 
+Matrix4x4 CreateRotationY(float angle);
+
 Vector3 Transform(const Vector3& vec, const Matrix4x4& mat);
 
 Vector3 Subtract(const Vector3& v1, const Vector3& v2);
