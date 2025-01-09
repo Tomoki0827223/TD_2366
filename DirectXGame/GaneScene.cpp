@@ -34,8 +34,11 @@ void GameScene::Initialize() {
 	modelEnemy_ = KamataEngine::Model::CreateFromOBJ("cube", true);
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 
+	modelbullet_ = KamataEngine::Model::CreateFromOBJ("Tama", true);
+	modelPlayerbullet_ = KamataEngine::Model::CreateFromOBJ("TamaPlayer", true);
+
 	camera_.Initialize();
-	player_->Initialize(modelPlayer_, &camera_, playerPos);
+	player_->Initialize(modelPlayer_, &camera_, modelPlayerbullet_, playerPos);
 	skydome_->Initialize(modelSkydome_, &camera_);
 
 	// 軸方向表示の表示を有効にする
@@ -52,6 +55,7 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
+
 	for (Enemy* enemy : enemies_) {
 		enemy->Update();
 	}
@@ -127,7 +131,7 @@ void GameScene::AddEnemyBullet(EnemyBullet* bullet) { enemyBullets_.push_back(bu
 void GameScene::EnemySpawn(const Vector3& position) {
 
 	Enemy* newEnemy = new Enemy();
-	newEnemy->Initialize(modelEnemy_, position);
+	newEnemy->Initialize(modelEnemy_, modelbullet_, position);
 
 	// 敵キャラに自キャラのアドレスを渡す
 	newEnemy->SetPlayer(player_);

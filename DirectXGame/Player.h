@@ -15,7 +15,7 @@ class Enemy;
 
 class Player {
 public:
-	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera, const KamataEngine::Vector3& pos);
+	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera, KamataEngine::Model* TamaModel, const KamataEngine::Vector3& pos);
 	void Update();
 	void Draw();
 	
@@ -43,11 +43,11 @@ private:
 
 	KamataEngine::Model* model_ = nullptr;
 
+	KamataEngine::Model* modelbullet_ = nullptr;
+
 	KamataEngine::Input* input_ = nullptr;
 
 	KamataEngine::Camera* camera_ = nullptr;
-
-	KamataEngine::Model* modelbullet_ = nullptr;
 
 	// 弾
 	std::list<PlayerBullet*> bullets_;

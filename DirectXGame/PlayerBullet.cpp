@@ -2,7 +2,7 @@
 #include "base/TextureManager.h"
 #include <cassert>
 
-PlayerBullet::~PlayerBullet() { model_ = nullptr; }
+PlayerBullet::~PlayerBullet() {}
 
 void PlayerBullet::Initialize(KamataEngine::Model* model, const KamataEngine::Vector3& position, const KamataEngine::Vector3& velocity) {
 

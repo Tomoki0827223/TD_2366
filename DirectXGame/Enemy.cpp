@@ -1,12 +1,13 @@
 #include "Enemy.h"
 #include "Player.h"
 
-Enemy::~Enemy() { delete modelbullet_; }
+Enemy::~Enemy() {}
 
-void Enemy::Initialize(KamataEngine::Model* model, const KamataEngine::Vector3& pos) {
+void Enemy::Initialize(KamataEngine::Model* model,KamataEngine::Model* TamaModel, const KamataEngine::Vector3& pos) {
 	assert(model);
 	model_ = model;
-	modelbullet_ = KamataEngine::Model::CreateFromOBJ("Tama", true);
+	modelbullet_ = TamaModel;
+
 	worldtransfrom_.translation_ = pos;
 	worldtransfrom_.Initialize();
 }

@@ -38,7 +38,6 @@ private:
 	Player* player_ = nullptr;
 	// Enemy* enemy_ = nullptr;
 	Skydome* skydome_ = nullptr;
-	Model* modelSkydome_ = nullptr;
 	RailCamera* railCamera_ = nullptr;
 
 	Vector3 playerPos = {0, 0, 25};
@@ -47,6 +46,9 @@ private:
 
 	Model* modelPlayer_ = nullptr;
 	Model* modelEnemy_ = nullptr;
+	Model* modelSkydome_ = nullptr;
+	Model* modelbullet_ = nullptr;
+	Model* modelPlayerbullet_ = nullptr;
 
 	// カメラ
 	WorldTransform worldTransform_;

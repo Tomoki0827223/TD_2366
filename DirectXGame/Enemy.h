@@ -17,7 +17,7 @@ enum class Phase {
 
 class Enemy {
 public:
-	void Initialize(KamataEngine::Model* model, const KamataEngine::Vector3& pos);
+	void Initialize(KamataEngine::Model* model, KamataEngine::Model* TamaModel, const KamataEngine::Vector3& pos);
 	void Update();
 	void Draw(const KamataEngine::Camera& camera);
 	~Enemy();
@@ -40,7 +40,6 @@ public:
 private:
 	KamataEngine::WorldTransform worldtransfrom_;
 	KamataEngine::Model* model_ = nullptr;
-
 	KamataEngine::Model* modelbullet_ = nullptr;
 
 	bool isDead_ = false;

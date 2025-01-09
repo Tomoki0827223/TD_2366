@@ -4,19 +4,15 @@
 #include <cassert>
 
 Player::~Player() {
-
-	delete modelbullet_;
-	for (PlayerBullet* bullet : bullets_) {
-		delete bullet;
-	}
 }
 
-void Player::Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera, const KamataEngine::Vector3& pos) {
+void Player::Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera, KamataEngine::Model* TamaModel, const KamataEngine::Vector3& pos){
 
 	assert(model);
 	model_ = model;
 	camera_ = camera;
-	modelbullet_ = KamataEngine::Model::CreateFromOBJ("TamaPlayer", true);
+
+	modelbullet_ = TamaModel;
 
 	worldtransfrom_.translation_ = pos;
 	input_ = KamataEngine::Input::GetInstance();
