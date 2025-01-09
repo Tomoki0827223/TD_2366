@@ -110,6 +110,7 @@
     <ClCompile Include="affine.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyBullet.cpp" />
+    <ClCompile Include="EnemyType1.cpp" />
     <ClCompile Include="GaneScene.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -198,7 +199,9 @@
     <ClInclude Include="affine.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyBullet.h" />
+    <ClInclude Include="EnemyType1.h" />
     <ClInclude Include="GaneScene.h" />
+    <ClInclude Include="Matrix4x4.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerBullet.h" />
     <ClInclude Include="RailCamera.h" />

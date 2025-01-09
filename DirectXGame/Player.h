@@ -12,6 +12,7 @@ class Input;
 };
 
 class Enemy;
+class EnemyType1;
 
 class Player {
 public:
@@ -35,6 +36,7 @@ public:
 	static inline const float kHeight = 1.0f;
 
 	void SetEnemy(Enemy* enemy) { enemy_ = enemy; }
+	void SetEnemy(EnemyType1* enemy) { enemy1_ = enemy; }
 
 	void SetParent(const WorldTransform* parent);
 
@@ -56,6 +58,7 @@ private:
 	bool isParry_ = false;
 
 	Enemy* enemy_ = nullptr;
+	EnemyType1* enemy1_ = nullptr;
 
 	// 発射タイマー
 	int32_t spawnTimer = 0;
