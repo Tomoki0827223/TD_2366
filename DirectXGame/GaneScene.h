@@ -50,6 +50,7 @@ private:
 	Model* modelEnemyBullet_ = nullptr;
 	Model* modelPlayerbullet_ = nullptr;
 	Model* modelPlayerbullet2_ = nullptr;
+	Model* modelPlayerbullet3_ = nullptr;
 
 	// カメラ
 	WorldTransform worldTransform_;

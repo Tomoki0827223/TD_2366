@@ -15,6 +15,7 @@ GameScene::~GameScene() {
 	delete modelEnemyBullet_;
 	delete modelPlayerbullet_;
 	delete modelPlayerbullet2_;
+	delete modelPlayerbullet3_;
 
 	for (EnemyBullet* bullet : enemyBullets_) {
 		delete bullet;
@@ -40,9 +41,10 @@ void GameScene::Initialize() {
 	modelEnemyBullet_ = KamataEngine::Model::CreateFromOBJ("Tama", true);
 	modelPlayerbullet_ = KamataEngine::Model::CreateFromOBJ("TamaPlayer", true);
 	modelPlayerbullet2_ = KamataEngine::Model::CreateFromOBJ("TamaPlayer", true);
+	modelPlayerbullet3_ = KamataEngine::Model::CreateFromOBJ("TamaPlayer", true);
 
 	camera_.Initialize();
-	player_->Initialize(modelPlayer_, &camera_, modelPlayerbullet_, modelPlayerbullet2_, playerPos);
+	player_->Initialize(modelPlayer_, &camera_, modelPlayerbullet_, modelPlayerbullet2_, modelPlayerbullet3_, playerPos);
 	skydome_->Initialize(modelSkydome_, &camera_);
 
 	// 軸方向表示の表示を有効にする

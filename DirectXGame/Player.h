@@ -6,7 +6,6 @@
 #include "PlayerBullet.h"
 #include "PlayerBullet2.h"
 #include "AABB.h"
-#include <vector>
 #include <algorithm>
 #include <cassert>
 
@@ -32,6 +31,9 @@ public:
     // 新しいメソッド
 	void SetEnemy(Enemy* enemy) { enemy_ = enemy; }
 
+	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
+	const std::list<PlayerBullet2*>& GetBullets2() const { return bullets2_; }
+
 private:
 	void Attack();
 
@@ -44,8 +46,8 @@ private:
 	KamataEngine::Model* type2BulletModel_ = nullptr;
 	KamataEngine::Input* input_ = nullptr;
 	KamataEngine::WorldTransform worldtransform_;
-	std::vector<PlayerBullet*> bullets_;
-	std::vector<PlayerBullet2*> bullets2_;
+	std::list<PlayerBullet*> bullets_;
+	std::list<PlayerBullet2*> bullets2_;
 	BulletType currentBulletType_ = BulletType::Normal;
 	bool isDead_ = false;
 
