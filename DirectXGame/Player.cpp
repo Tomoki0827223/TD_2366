@@ -51,11 +51,11 @@ void Player::Attack() {
 
 	if (currentBulletType_ == BulletType::Type2) {
 		PlayerBullet2* newBullet = new PlayerBullet2();
-		newBullet->Initialize(bulletModel, worldtransform_.translation_, KamataEngine::Vector3(0, 0, 1));
+		newBullet->Initialize(bulletModel, GetWorldPosition(), KamataEngine::Vector3(0, 0, 1));
 		bullets2_.push_back(newBullet);
 	} else {
 		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(bulletModel, worldtransform_.translation_, KamataEngine::Vector3(0, 0, 1));
+		newBullet->Initialize(bulletModel, GetWorldPosition(), KamataEngine::Vector3(0, 0, 1));
 		bullets_.push_back(newBullet);
 	}
 }

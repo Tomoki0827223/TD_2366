@@ -40,7 +40,7 @@ void GameScene::Initialize() {
 
 	modelEnemyBullet_ = KamataEngine::Model::CreateFromOBJ("Tama", true);
 	modelPlayerbullet_ = KamataEngine::Model::CreateFromOBJ("TamaPlayer", true);
-	modelPlayerbullet2_ = KamataEngine::Model::CreateFromOBJ("TamaPlayer", true);
+	modelPlayerbullet2_ = KamataEngine::Model::CreateFromOBJ("cube", true);
 	modelPlayerbullet3_ = KamataEngine::Model::CreateFromOBJ("TamaPlayer", true);
 
 	camera_.Initialize();
