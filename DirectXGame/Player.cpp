@@ -24,6 +24,9 @@ void Player::Initialize(
 	normalBulletModel_ = normalBulletModel;
 	specialBulletModel_ = specialBulletModel;
 	type2BulletModel_ = type2BulletModel;
+
+	worldtransform_.Initialize();
+
 	worldtransform_.translation_ = position;
 
 	input_ = KamataEngine::Input::GetInstance();
