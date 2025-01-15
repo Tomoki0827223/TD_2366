@@ -14,9 +14,11 @@ void Player::Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera
 
 	modelbullet_ = TamaModel;
 
-	worldtransfrom_.translation_ = pos;
-	input_ = KamataEngine::Input::GetInstance();
 	worldtransfrom_.Initialize();
+
+	worldtransfrom_.translation_ = pos;
+
+	input_ = KamataEngine::Input::GetInstance();
 }
 
 void Player::OnCollision() { isDead_ = true; }
