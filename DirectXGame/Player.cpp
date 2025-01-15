@@ -93,8 +93,6 @@ void Player::Update() {
 		SwitchBulletType(BulletType::Type2);
 	}
 
-	Attack();
-
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Update();
 	}
@@ -152,6 +150,8 @@ void Player::Update() {
 	worldtransform_.translation_.y += move.y;
 
 	worldtransform_.UpdateMatarix();
+
+	Attack();
 }
 
 void Player::Draw(const KamataEngine::Camera& camera) {
