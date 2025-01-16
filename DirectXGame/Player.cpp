@@ -37,26 +37,29 @@ void Player::OnCollision() { isDead_ = true; }
 void Player::Attack() {
 	KamataEngine::Model* bulletModel = nullptr;
 
-	switch (currentBulletType_) {
-	case BulletType::Normal:
-		bulletModel = normalBulletModel_;
-		break;
-	case BulletType::Special:
-		bulletModel = specialBulletModel_;
-		break;
-	case BulletType::Type2:
-		bulletModel = type2BulletModel_;
-		break;
-	}
+	if (input_->PushKey(DIK_SPACE)) {
 
-	if (currentBulletType_ == BulletType::Type2) {
-		PlayerBullet2* newBullet = new PlayerBullet2();
-		newBullet->Initialize(bulletModel, GetWorldPosition(), KamataEngine::Vector3(0, 0, 1));
-		bullets2_.push_back(newBullet);
-	} else {
-		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(bulletModel, GetWorldPosition(), KamataEngine::Vector3(0, 0, 1));
-		bullets_.push_back(newBullet);
+		switch (currentBulletType_) {
+		case BulletType::Normal:
+			bulletModel = normalBulletModel_;
+			break;
+		case BulletType::Special:
+			bulletModel = specialBulletModel_;
+			break;
+		case BulletType::Type2:
+			bulletModel = type2BulletModel_;
+			break;
+		}
+
+		if (currentBulletType_ == BulletType::Type2) {
+			PlayerBullet2* newBullet = new PlayerBullet2();
+			newBullet->Initialize(bulletModel, GetWorldPosition(), KamataEngine::Vector3(0, 0, 1));
+			bullets2_.push_back(newBullet);
+		} else {
+			PlayerBullet* newBullet = new PlayerBullet();
+			newBullet->Initialize(bulletModel, GetWorldPosition(), KamataEngine::Vector3(0, 0, 1));
+			bullets_.push_back(newBullet);
+		}
 	}
 }
 
