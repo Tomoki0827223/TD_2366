@@ -15,27 +15,27 @@ void EnemyType1::Update()
 	Fire();
 
 	// キャラクターの移動ベクトル
-	KamataEngine::Vector3 move = {0, 0, 0};
+	//KamataEngine::Vector3 move = {0, 0, 0};
 	// 接近
 	KamataEngine::Vector3 accessSpeed = {-0.1f, -0.1f, -0.1f};
 	// 離脱
 	KamataEngine::Vector3 eliminationSpeed = {-0.3f, -0.3f, -0.3f};
 
-	switch (phase_) {
-	case Phase::Approach:
-	default:
-		// 移動(ベクトルを加算)
-		worldtransfrom_.translation_.z += accessSpeed.z;
-		// 規定の位置に到達したら離脱
-		if (worldtransfrom_.translation_.z < 0.0f) {
-			phase_ = Phase::Leave;
-		}
-		break;
-	case Phase::Leave:
-		// 移動(ベクトルを加算)
-		worldtransfrom_.translation_.y += eliminationSpeed.y;
-		break;
-	}
+	//switch (phase_) {
+	//case Phase::Approach:
+	//default:
+	//	// 移動(ベクトルを加算)
+	//	worldtransfrom_.translation_.z += accessSpeed.z;
+	//	// 規定の位置に到達したら離脱
+	//	if (worldtransfrom_.translation_.z < 0.0f) {
+	//		phase_ = Phase::Leave;
+	//	}
+	//	break;
+	//case Phase::Leave:
+	//	// 移動(ベクトルを加算)
+	//	worldtransfrom_.translation_.y += eliminationSpeed.y;
+	//	break;
+	//}
 
 	worldtransfrom_.UpdateMatarix();
 }

@@ -64,6 +64,10 @@ void GameScene::Update() {
 		enemy->Update();
 	}
 
+	for (EnemyType1* enemyType1 : enemieTypes1_) {
+		enemyType1->Update();
+	}
+
 
 	UpdateEnemyPopCommands();
 
@@ -118,7 +122,13 @@ void GameScene::Draw() {
 		enemy->Draw(camera_);
 	}
 
+	for (EnemyType1* enemyType1 : enemieTypes1_) {
+		enemyType1->Draw(camera_);
+	}
+
+
 	skydome_->Draw(camera_);
+
 	for (EnemyBullet* bullet : enemyBullets_) {
 		bullet->Draw(camera_);
 	}
@@ -135,37 +145,48 @@ void GameScene::AddEnemyBullet(EnemyBullet* bullet)
 }
 
 void GameScene::EnemySpawn(int type, const Vector3& position) {
-	
 	Enemy* newEnemy = nullptr;
 	EnemyType1* newEnemy1 = nullptr;
 
 	switch (type) {
 	case 1:
 		newEnemy1 = new EnemyType1();
+		newEnemy1->Initialize(modelEnemyType1_, modelbullet_, position);
+		newEnemy1->SetPlayer(player_);
+		newEnemy1->SetGameScene(this);
+		enemieTypes1_.push_back(newEnemy1);
 		break;
-	case 2:
-		//newEnemy = new EnemyType2();
+	case 5:
+		// newEnemy = new EnemyType2(); // 新しい敵の種類を追加
+		// newEnemy->Initialize(modelEnemy_, modelbullet_, position);
+		// newEnemy->SetPlayer(player_);
+		// newEnemy->SetGameScene(this);
+		// enemies_.push_back(newEnemy);
 		break;
 	// 他の種類の敵を追加
-	case 9:
+	case 2:
 		newEnemy = new Enemy();
+		newEnemy->Initialize(modelEnemy_, modelbullet_, position);
+		newEnemy->SetPlayer(player_);
+		newEnemy->SetGameScene(this);
+		enemies_.push_back(newEnemy);
+		break;
+	default:
+		// 未知のタイプの場合はデフォルトの敵を生成
+		newEnemy = new Enemy();
+		newEnemy->Initialize(modelEnemy_, modelbullet_, position);
+		newEnemy->SetPlayer(player_);
+		newEnemy->SetGameScene(this);
+		enemies_.push_back(newEnemy);
 		break;
 	}
 
-	newEnemy->Initialize(modelEnemy_, modelbullet_, position);
-	newEnemy->SetPlayer(player_);
-
-	newEnemy1->Initialize(modelEnemyType1_, modelbullet_, position);
-	newEnemy1->SetPlayer(player_);
-	
-	player_->SetEnemy(newEnemy);
-	player_->SetEnemy(newEnemy1);
-
-	newEnemy->SetGameScene(this);
-	newEnemy1->SetGameScene(this);
-
-	enemies_.push_back(newEnemy);
-	enemieTypes1_.push_back(newEnemy1);
+	if (newEnemy) {
+		player_->SetEnemy(newEnemy);
+	}
+	if (newEnemy1) {
+		player_->SetEnemy(newEnemy1);
+	}
 }
    
 
@@ -221,6 +242,7 @@ void GameScene::UpdateEnemyPopCommands() {
 
 			// 敵を発生させる
 			EnemySpawn(type, Vector3(x, y, z));
+
 		} else if (word.find("WAIT") == 0) {
 			getline(line_stream, word, ',');
 			int32_t waitTime = atoi(word.c_str());
@@ -230,6 +252,7 @@ void GameScene::UpdateEnemyPopCommands() {
 		}
 	}
 }
+   
    
 
 void GameScene::CheckAllCollisions() {

@@ -10,11 +10,6 @@
 class Player;
 class GameScene;
 
-enum class Phase {
-	Approach, // 接近する
-	Leave,    // 離脱する
-};
-
 class EnemyType1 {
 public:
 	void Initialize(KamataEngine::Model* model, KamataEngine::Model* TamaModel, const KamataEngine::Vector3& pos);
@@ -50,7 +45,7 @@ private:
 	Player* player_ = nullptr;
 	GameScene* gameScene_ = nullptr;
 
-	Phase phase_ = Phase::Approach;
+	//Phase phase_ = Phase::Approach;
 
-	Phase Bulletphase_ = Phase::Approach;
+	//Phase Bulletphase_ = Phase::Approach;
 };
