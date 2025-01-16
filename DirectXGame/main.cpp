@@ -93,30 +93,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	primitiveDrawer->Initialize();
 #pragma endregion
 
-	// ゲームシーンの初期化
-	gameScene = new GameScene();
-	gameScene->Initialize();
-
-	// ゲームオーバーシーンの初期化
-	gameOver = new GameOver();
-	gameOver->Initialize();
-
-	// ゲームクリアシーンの初期化
-	gameClear = new GameClear();
-	gameClear->Initialize();
-
 	// タイトルシーンの初期化
 	titleScene = new TitleSence();
 	titleScene->Initialize();
 
-	// セレクトステージの初期化
-	selectStage = new Select_Stage();
-	selectStage->Initialize();
-
 	// シーンをタイトルシーンに設定
 	scene = Scene::kTitleScene;
 
-    // メインループ
+	// メインループ
 	while (true) {
 		// メッセージ処理
 		if (win->ProcessMessage()) {
@@ -170,40 +154,57 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 }
 
 void ChangeScene() {
+
 	switch (scene) {
 	case Scene::kTitleScene:
 		if (titleScene->IsFinished()) {
+			delete titleScene;
+			titleScene = nullptr;
 			scene = Scene::kSelectStage;
+			selectStage = new Select_Stage();
 			selectStage->Initialize();
 		}
 		break;
 	case Scene::kSelectStage:
 		if (selectStage->IsFinished()) {
 			mapNumber = selectStage->GetStageNumber();
+			delete selectStage;
+			selectStage = nullptr;
 			scene = Scene::kGameScene;
+			gameScene = new GameScene();
 			gameScene->Initialize();
 		}
 		break;
 	case Scene::kGameScene:
 		if (gameScene->IsFinished()) {
+			delete gameScene;
+			gameScene = nullptr;
 			scene = Scene::kGameClear;
+			gameClear = new GameClear();
 			gameClear->Initialize();
 		}
 		break;
 	case Scene::kGameOver:
 		if (gameOver->IsFinished()) {
+			delete gameOver;
+			gameOver = nullptr;
 			scene = Scene::kTitleScene;
+			titleScene = new TitleSence();
 			titleScene->Initialize();
 		}
 		break;
 	case Scene::kGameClear:
 		if (gameClear->IsFinished()) {
+			delete gameClear;
+			gameClear = nullptr;
 			scene = Scene::kTitleScene;
+			titleScene = new TitleSence();
 			titleScene->Initialize();
 		}
 		break;
 	}
 }
+
 
 void UpdateScene() 
 {

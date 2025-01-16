@@ -38,8 +38,8 @@ void GameScene::Initialize() {
 	player_ = new Player();
 	skydome_ = new Skydome();
 	// 3Dモデルの生成
-	modelPlayer_ = KamataEngine::Model::CreateFromOBJ("cube", true);
-	modelEnemy_ = KamataEngine::Model::CreateFromOBJ("cube", true);
+	modelPlayer_ = KamataEngine::Model::CreateFromOBJ("player", true);
+	modelEnemy_ = KamataEngine::Model::CreateFromOBJ("enemy", true);
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 
 	modelEnemyBullet_ = KamataEngine::Model::CreateFromOBJ("Tama", true);
@@ -69,7 +69,7 @@ void GameScene::Update() {
 	elapsedTime_ += 1.0f / 60.0f; // 1フレームあたりの時間を加算 (60FPSの場合)
 
 	// 60秒経過したらゲームクリア
-	if (elapsedTime_ >= 60.0f) {
+	if (elapsedTime_ >= 10.0f) {
 		isFinished_ = true;
 		return;
 	}

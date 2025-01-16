@@ -1,22 +1,20 @@
 #include "Select_Stage.h"
 #include <iostream>
 
-Select_Stage::~Select_Stage() 
-{
+Select_Stage::~Select_Stage() {
 	delete skydome_;
 	delete modelSkydome_;
 	delete sprite_;
 }
 
-void Select_Stage::Initialize() 
-{
+void Select_Stage::Initialize() {
 	dxCommon_ = KamataEngine::DirectXCommon::GetInstance();
 	input_ = KamataEngine::Input::GetInstance();
 	audio_ = KamataEngine::Audio::GetInstance();
 
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
-	
+
 	// ビュープロジェクションの初期化
 	camera_.Initialize();
 
@@ -30,8 +28,7 @@ void Select_Stage::Initialize()
 	sprite_ = KamataEngine::Sprite::Create(textureHandle_, {50, 25});
 }
 
-void Select_Stage::Update() 
-{
+void Select_Stage::Update() {
 	if (input_->TriggerKey(DIK_1)) {
 		finished_ = true;
 		StageNumber_ = 0;
@@ -46,12 +43,11 @@ void Select_Stage::Update()
 		finished_ = true;
 		StageNumber_ = 2;
 		skydome_->Update();
-		// std::cout << "ステージ1が選択されました。" << std::endl;
+		// std::cout << "ステージ2が選択されました。" << std::endl;
 	}
 }
 
-void Select_Stage::Draw() 
-{
+void Select_Stage::Draw() {
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList();
 
