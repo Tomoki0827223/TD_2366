@@ -1,7 +1,48 @@
 #include "GaneScene.h"
 #include <KamataEngine.h>
+#include "GameOver.h"
+#include "GameClear.h"
+#include "TitleSence.h"
+#include "Select_Stage.h"
 
 using namespace KamataEngine;
+
+// シーン（型）
+enum class Scene {
+
+	kUnknown = 0,
+
+	kTitleScene,
+	kSelectStage,
+	kGameScene,
+	kGameOver,
+	kGameClear,
+
+};
+
+int mapNumber = 0;
+
+// タイトルシーン
+TitleSence* titleScene = nullptr;
+
+//セレクトステージ
+Select_Stage* selectStage = nullptr;
+
+// ゲームシーン
+GameScene* gameScene = nullptr;
+
+// ゲームオーバーシーン
+GameOver* gameOver = nullptr;
+
+// ゲームクリアシーン
+GameClear* gameClear = nullptr;
+
+// 現在シーン（型）
+Scene scene = Scene::kUnknown;
+
+void ChangeScene();
+void UpdateScene();
+void DrawScene();
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -12,11 +53,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Audio* audio = nullptr;
 	AxisIndicator* axisIndicator = nullptr;
 	PrimitiveDrawer* primitiveDrawer = nullptr;
-	GameScene* gameScene = nullptr;
 
 	// ゲームウィンドウの作成
 	win = WinApp::GetInstance();
-	win->CreateGameWindow();
+	win->CreateGameWindow(L"Test");
 
 	// DirectX初期化処理
 	dxCommon = DirectXCommon::GetInstance();
@@ -57,7 +97,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	gameScene = new GameScene();
 	gameScene->Initialize();
 
-	// メインループ
+	// ゲームオーバーシーンの初期化
+	gameOver = new GameOver();
+	gameOver->Initialize();
+
+	// ゲームクリアシーンの初期化
+	gameClear = new GameClear();
+	gameClear->Initialize();
+
+	// タイトルシーンの初期化
+	titleScene = new TitleSence();
+	titleScene->Initialize();
+
+	// セレクトステージの初期化
+	selectStage = new Select_Stage();
+	selectStage->Initialize();
+
+	// シーンをタイトルシーンに設定
+	scene = Scene::kTitleScene;
+
+    // メインループ
 	while (true) {
 		// メッセージ処理
 		if (win->ProcessMessage()) {
@@ -68,8 +127,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		imguiManager->Begin();
 		// 入力関連の毎フレーム処理
 		input->Update();
-		// ゲームシーンの毎フレーム処理
-		gameScene->Update();
+
+		// シーンの更新と切り替え
+		UpdateScene();
+		ChangeScene();
+
 		// 軸表示の更新
 		axisIndicator->Update();
 		// ImGui受付終了
@@ -77,8 +139,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// 描画開始
 		dxCommon->PreDraw();
-		// ゲームシーンの描画
-		gameScene->Draw();
+		// シーンの描画
+		DrawScene();
 		// 軸表示の描画
 		axisIndicator->Draw();
 		// プリミティブ描画のリセット
@@ -88,7 +150,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// 描画終了
 		dxCommon->PostDraw();
 	}
+
 	delete gameScene;
+	delete gameOver;
+	delete gameClear;
+	delete titleScene;
+	delete selectStage;
+
 	// 3Dモデル解放
 	Model::StaticFinalize();
 	audio->Finalize();
@@ -99,4 +167,82 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	win->TerminateGameWindow();
 
 	return 0;
+}
+
+void ChangeScene() {
+	switch (scene) {
+	case Scene::kTitleScene:
+		if (titleScene->IsFinished()) {
+			scene = Scene::kSelectStage;
+			selectStage->Initialize();
+		}
+		break;
+	case Scene::kSelectStage:
+		if (selectStage->IsFinished()) {
+			mapNumber = selectStage->GetStageNumber();
+			scene = Scene::kGameScene;
+			gameScene->Initialize();
+		}
+		break;
+	case Scene::kGameScene:
+		if (gameScene->IsFinished()) {
+			scene = Scene::kGameClear;
+			gameClear->Initialize();
+		}
+		break;
+	case Scene::kGameOver:
+		if (gameOver->IsFinished()) {
+			scene = Scene::kTitleScene;
+			titleScene->Initialize();
+		}
+		break;
+	case Scene::kGameClear:
+		if (gameClear->IsFinished()) {
+			scene = Scene::kTitleScene;
+			titleScene->Initialize();
+		}
+		break;
+	}
+}
+
+void UpdateScene() 
+{
+	switch (scene) {
+	case Scene::kTitleScene:
+		titleScene->Update();
+		break;
+	case Scene::kSelectStage:
+		selectStage->Update();
+		break;
+	case Scene::kGameScene:
+		gameScene->Update();
+		break;
+	case Scene::kGameOver:
+		gameOver->Update();
+		break;
+	case Scene::kGameClear:
+		gameClear->Update();
+		break;
+	}
+}
+
+void DrawScene() 
+{
+	switch (scene) {
+	case Scene::kTitleScene:
+		titleScene->Draw();
+		break;
+	case Scene::kSelectStage:
+		selectStage->Draw();
+		break;
+	case Scene::kGameScene:
+		gameScene->Draw();
+		break;
+	case Scene::kGameOver:
+		gameOver->Draw();
+		break;
+	case Scene::kGameClear:
+		gameClear->Draw();
+		break;
+	}
 }

@@ -30,6 +30,9 @@ public:
 	int32_t timer = 0;
 	bool timerflag = true;
 
+
+	bool IsFinished() const { return isFinished_; }
+
 private:
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -66,4 +69,7 @@ private:
 	std::stringstream enemyPopCommands;
 
 	std::list<Enemy*> enemies_;
+
+	bool isFinished_ = false;
+	float elapsedTime_ = 0.0f; // 経過時間
 };

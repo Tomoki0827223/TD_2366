@@ -20,10 +20,14 @@ GameScene::~GameScene() {
 	for (EnemyBullet* bullet : enemyBullets_) {
 		delete bullet;
 	}
+	enemyBullets_.clear(); // 追加
+
 	for (Enemy* enemy : enemies_) {
 		delete enemy;
 	}
+	enemies_.clear(); // 追加
 }
+
 
 void GameScene::Initialize() {
 
@@ -61,12 +65,37 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
+	// 経過時間を更新
+	elapsedTime_ += 1.0f / 60.0f; // 1フレームあたりの時間を加算 (60FPSの場合)
 
-	for (Enemy* enemy : enemies_) {
-		enemy->Update();
+	// 60秒経過したらゲームクリア
+	if (elapsedTime_ >= 60.0f) {
+		isFinished_ = true;
+		return;
 	}
 
+	// プレイヤーの位置を取得
+	Vector3 playerPosition = player_->GetWorldPosition();
 
+	// 敵の更新と削除判定
+	for (auto it = enemies_.begin(); it != enemies_.end();) {
+		Enemy* enemy = *it;
+		enemy->Update();
+
+		// 敵の位置を取得
+		Vector3 enemyPosition = enemy->GetWorldPosition();
+
+		// 敵がプレイヤーの後ろ側にいるかどうかを判定
+		if (enemyPosition.z < playerPosition.z) {
+			// 敵を削除
+			delete enemy;
+			it = enemies_.erase(it);
+		} else {
+			++it;
+		}
+	}
+
+	// 他の更新処理
 	UpdateEnemyPopCommands();
 
 	for (EnemyBullet* bullet : enemyBullets_) {
@@ -98,6 +127,7 @@ void GameScene::Update() {
 	camera_.matProjection = railCamera_->GetViewProjection().matProjection;
 	camera_.TransferMatrix();
 }
+
 
 
 void GameScene::Draw() {
