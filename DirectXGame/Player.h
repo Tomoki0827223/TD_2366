@@ -33,10 +33,12 @@ public:
 
 	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
 	const std::list<PlayerBullet2*>& GetBullets2() const { return bullets2_; }
+	bool IsDead() const { return hp_ <= 0; } // HPがゼロになったかどうかをチェッ
 
 private:
 	void Attack();
 
+	uint32_t hp_ = 100;
 	Enemy* enemy_ = nullptr;
 
 	KamataEngine::Model* model_ = nullptr;

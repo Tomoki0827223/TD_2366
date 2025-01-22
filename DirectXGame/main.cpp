@@ -154,7 +154,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 }
 
 void ChangeScene() {
-
 	switch (scene) {
 	case Scene::kTitleScene:
 		if (titleScene->IsFinished()) {
@@ -182,6 +181,12 @@ void ChangeScene() {
 			scene = Scene::kGameClear;
 			gameClear = new GameClear();
 			gameClear->Initialize();
+		} else if (gameScene->IsGameOver()) {
+			delete gameScene;
+			gameScene = nullptr;
+			scene = Scene::kGameOver;
+			gameOver = new GameOver();
+			gameOver->Initialize();
 		}
 		break;
 	case Scene::kGameOver:

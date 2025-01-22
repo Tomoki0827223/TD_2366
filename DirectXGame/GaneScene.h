@@ -30,8 +30,10 @@ public:
 	int32_t timer = 0;
 	bool timerflag = true;
 
+	
+    bool IsFinished() const { return isFinished_; }
+	bool IsGameOver() const { return isGameOver_; } // ゲームオーバーのフラグをチェック
 
-	bool IsFinished() const { return isFinished_; }
 
 private:
 	DirectXCommon* dxCommon_ = nullptr;
@@ -72,4 +74,7 @@ private:
 
 	bool isFinished_ = false;
 	float elapsedTime_ = 0.0f; // 経過時間
+
+	bool isOverFinished_ = false;
+	bool isGameOver_ = false;  // ゲームオーバーのフラグ
 };

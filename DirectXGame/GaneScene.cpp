@@ -28,9 +28,7 @@ GameScene::~GameScene() {
 	enemies_.clear(); // 追加
 }
 
-
 void GameScene::Initialize() {
-
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
@@ -38,14 +36,14 @@ void GameScene::Initialize() {
 	player_ = new Player();
 	skydome_ = new Skydome();
 	// 3Dモデルの生成
-	modelPlayer_ = KamataEngine::Model::CreateFromOBJ("player", true);
-	modelEnemy_ = KamataEngine::Model::CreateFromOBJ("enemy", true);
+	modelPlayer_ = Model::CreateFromOBJ("player", true);
+	modelEnemy_ = Model::CreateFromOBJ("enemy", true);
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 
-	modelEnemyBullet_ = KamataEngine::Model::CreateFromOBJ("Tama", true);
-	modelPlayerbullet_ = KamataEngine::Model::CreateFromOBJ("TamaPlayer", true);
-	modelPlayerbullet2_ = KamataEngine::Model::CreateFromOBJ("cube", true);
-	modelPlayerbullet3_ = KamataEngine::Model::CreateFromOBJ("TamaPlayer", true);
+	modelEnemyBullet_ = Model::CreateFromOBJ("Tama", true);
+	modelPlayerbullet_ = Model::CreateFromOBJ("TamaPlayer", true);
+	modelPlayerbullet2_ = Model::CreateFromOBJ("cube", true);
+	modelPlayerbullet3_ = Model::CreateFromOBJ("TamaPlayer", true);
 
 	camera_.Initialize();
 	player_->Initialize(modelPlayer_, &camera_, modelPlayerbullet_, modelPlayerbullet2_, modelPlayerbullet3_, playerPos);
@@ -64,13 +62,20 @@ void GameScene::Initialize() {
 	LoadEnemyPopData();
 }
 
+
 void GameScene::Update() {
 	// 経過時間を更新
 	elapsedTime_ += 1.0f / 60.0f; // 1フレームあたりの時間を加算 (60FPSの場合)
 
 	// 60秒経過したらゲームクリア
-	if (elapsedTime_ >= 10.0f) {
+	if (elapsedTime_ >= 120.0f) {
 		isFinished_ = true;
+		return;
+	}
+
+	// プレイヤーのHPをチェック
+	if (player_->IsDead()) {
+		isGameOver_ = true;
 		return;
 	}
 
@@ -128,21 +133,31 @@ void GameScene::Update() {
 	camera_.TransferMatrix();
 }
 
-
-
 void GameScene::Draw() {
-
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList();
 
 #pragma region 背景スプライト描画
 	// 背景スプライト描画前処理
-	Sprite::PreDraw(commandList);
-	Sprite::PostDraw();
+	KamataEngine::Sprite::PreDraw(commandList);
+
+	/// <summary>
+	/// ここに背景スプライトの描画処理を追加できる
+	/// </summary>
+
+	// スプライト描画後処理
+	KamataEngine::Sprite::PostDraw();
+	// 深度バッファクリア
 	dxCommon_->ClearDepthBuffer();
+#pragma endregion
+
+#pragma region 3Dオブジェクト描画
+	// 3Dオブジェクト描画前処理
 	KamataEngine::Model::PreDraw(commandList);
 
-
+	/// <summary>
+	/// ここに3Dオブジェクトの描画処理を追加できる
+	/// </summary>
 
 	player_->Draw(camera_);
 
@@ -155,11 +170,27 @@ void GameScene::Draw() {
 		bullet->Draw(camera_);
 	}
 
-
+	// 3Dオブジェクト描画後処理
 	KamataEngine::Model::PostDraw();
+#pragma endregion
+
+#pragma region 前景スプライト描画
+	// 前景スプライト描画前処理
+	KamataEngine::Sprite::PreDraw(commandList);
+
 	Sprite::PreDraw(commandList);
 	Sprite::PostDraw();
+
+	/// <summary>
+	/// ここに前景スプライトの描画処理を追加できる
+	/// </summary>
+
+	// スプライト描画後処理
+	KamataEngine::Sprite::PostDraw();
+
+#pragma endregion
 }
+
 
 void GameScene::AddEnemyBullet(EnemyBullet* bullet) 
 { 
