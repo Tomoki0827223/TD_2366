@@ -1,18 +1,16 @@
 #pragma once
-#include <3d/Camera.h>
-#include <3d/Model.h>
-#include <3d/WorldTransform.h>
+#include "KamataEngine.h"
 
-class Skydome {
+class Skydome_Sence {
 
 public:
-
+	
 	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera);
 	void Update();
 	void Draw();
 
-
 private:
+	
 	KamataEngine::WorldTransform worldtransfrom_;
 	KamataEngine::Model* model_ = nullptr;
 	KamataEngine::Camera* camera_ = nullptr;

@@ -11,11 +11,14 @@ GameScene::~GameScene() {
 	delete modelSkydome_;
 	delete player_;
 	delete skydome_;
+	delete skydome2_;
 	delete railCamera_;
 	delete modelEnemyBullet_;
 	delete modelPlayerbullet_;
 	delete modelPlayerbullet2_;
 	delete modelPlayerbullet3_;
+	delete modelSkydome2_;
+
 
 	for (EnemyBullet* bullet : enemyBullets_) {
 		delete bullet;
@@ -38,7 +41,9 @@ void GameScene::Initialize() {
 	// 3Dモデルの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
 	modelEnemy_ = Model::CreateFromOBJ("enemy", true);
+
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
+	modelSkydome2_ = Model::CreateFromOBJ("skydome2", true);
 
 	modelEnemyBullet_ = Model::CreateFromOBJ("Tama", true);
 	modelPlayerbullet_ = Model::CreateFromOBJ("TamaPlayer", true);
@@ -48,6 +53,7 @@ void GameScene::Initialize() {
 	camera_.Initialize();
 	player_->Initialize(modelPlayer_, &camera_, modelPlayerbullet_, modelPlayerbullet2_, modelPlayerbullet3_, playerPos);
 	skydome_->Initialize(modelSkydome_, &camera_);
+	skydome2_->Initialize(modelSkydome2_, &camera_);
 
 	// 軸方向表示の表示を有効にする
 	KamataEngine::AxisIndicator::GetInstance()->SetVisible(true);
@@ -68,7 +74,7 @@ void GameScene::Update() {
 	elapsedTime_ += 1.0f / 60.0f; // 1フレームあたりの時間を加算 (60FPSの場合)
 
 	// 60秒経過したらゲームクリア
-	if (elapsedTime_ >= 120.0f) {
+	if (elapsedTime_ >= 60.0f) {
 		isFinished_ = true;
 		return;
 	}
@@ -165,7 +171,16 @@ void GameScene::Draw() {
 		enemy->Draw(camera_);
 	}
 
-	skydome_->Draw(camera_);
+	// 60秒経過したらゲームクリア
+	if (elapsedTime_ >= 20.0f) {
+
+		skydome2_->Draw();
+
+		return;
+	}
+
+	skydome_->Draw();
+
 	for (EnemyBullet* bullet : enemyBullets_) {
 		bullet->Draw(camera_);
 	}

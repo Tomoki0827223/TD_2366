@@ -19,8 +19,10 @@ void Select_Stage::Initialize() {
 	camera_.Initialize();
 
 	// 天球を生成
-	skydome_ = new Skydome();
+	skydome_ = new Skydome_Sence();
+	
 	modelSkydome_ = KamataEngine::Model::CreateFromOBJ("skydome", true);
+
 	// 天球を初期化
 	skydome_->Initialize(modelSkydome_, &camera_);
 
@@ -73,7 +75,7 @@ void Select_Stage::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 
-	skydome_->Draw(camera_);
+	skydome_->Draw();
 
 	// 3Dオブジェクト描画後処理
 	KamataEngine::Model::PostDraw();

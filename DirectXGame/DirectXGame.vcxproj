@@ -120,6 +120,8 @@
     <ClCompile Include="RailCamera.cpp" />
     <ClCompile Include="Select_Stage.cpp" />
     <ClCompile Include="Skydome.cpp" />
+    <ClCompile Include="Skydome2.cpp" />
+    <ClCompile Include="Skydome_Sence.cpp" />
     <ClCompile Include="TitleSence.cpp" />
     <ClCompile Include="worldTransformEx.cpp" />
   </ItemGroup>
@@ -212,6 +214,8 @@
     <ClInclude Include="RailCamera.h" />
     <ClInclude Include="Select_Stage.h" />
     <ClInclude Include="Skydome.h" />
+    <ClInclude Include="Skydome2.h" />
+    <ClInclude Include="Skydome_Sence.h" />
     <ClInclude Include="TitleSence.h" />
     <ClInclude Include="worldTransformEx.h" />
   </ItemGroup>

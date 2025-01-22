@@ -4,7 +4,7 @@
 #include <2d/Sprite.h>
 #include <input/Input.h>
 #include <base/TextureManager.h>
-#include "Skydome.h"
+#include "Skydome_Sence.h"
 #include <KamataEngine.h>
 
 class GameOver {
@@ -48,7 +48,7 @@ private:
 	bool finished_ = false;
 
 	// 天球
-	Skydome* skydome_ = nullptr;
+	Skydome_Sence* skydome_ = nullptr;
 	KamataEngine::Model* modelSkydome_ = nullptr;
 
 	KamataEngine::Model* modelOver_ = nullptr;

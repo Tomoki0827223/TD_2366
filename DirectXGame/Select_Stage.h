@@ -4,7 +4,7 @@
 #include <2d/Sprite.h>
 #include <3d/WorldTransform.h>
 #include <3d/Camera.h>
-#include "Skydome.h"
+#include "Skydome_Sence.h"
 #include <input/Input.h>
 #include <base/TextureManager.h>
 #include <KamataEngine.h>
@@ -38,7 +38,7 @@ private:
 	bool finished_ = false;
 
 	// 天球
-	Skydome* skydome_ = nullptr;
+	Skydome_Sence* skydome_ = nullptr;
 	KamataEngine::Model* modelSkydome_ = nullptr;
 
 	uint32_t textureHandle_ = 0;

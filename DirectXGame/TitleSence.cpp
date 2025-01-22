@@ -21,8 +21,9 @@ void TitleSence::Initialize() {
 	Timer_ = 0.0f;
 
 	// 天球を生成
-	skydome_ = new Skydome();
+	skydome_ = new Skydome_Sence();
 	modelSkydome_ = KamataEngine::Model::CreateFromOBJ("skydome", true);
+
 	// 天球を初期化
 	skydome_->Initialize(modelSkydome_, &Camera_);
 

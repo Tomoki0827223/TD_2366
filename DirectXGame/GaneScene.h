@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "RailCamera.h"
 #include "Skydome.h"
+#include "Skydome2.h"
 #include <sstream>
 using namespace KamataEngine;
 
@@ -43,6 +44,7 @@ private:
 	Player* player_ = nullptr;
 	// Enemy* enemy_ = nullptr;
 	Skydome* skydome_ = nullptr;
+	Skydome2* skydome2_ = nullptr;
 	RailCamera* railCamera_ = nullptr;
 
 	Vector3 playerPos = {0, 0, 25};
@@ -51,7 +53,10 @@ private:
 
 	Model* modelPlayer_ = nullptr;
 	Model* modelEnemy_ = nullptr;
+	
 	Model* modelSkydome_ = nullptr;
+	Model* modelSkydome2_ = nullptr;
+
 	Model* modelEnemyBullet_ = nullptr;
 	Model* modelPlayerbullet_ = nullptr;
 	Model* modelPlayerbullet2_ = nullptr;

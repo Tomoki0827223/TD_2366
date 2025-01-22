@@ -3,18 +3,15 @@
 #include <3d/Model.h>
 #include <3d/WorldTransform.h>
 
-class Skydome {
+class Skydome2 {
 
 public:
-
 	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera);
 	void Update();
 	void Draw();
-
 
 private:
 	KamataEngine::WorldTransform worldtransfrom_;
 	KamataEngine::Model* model_ = nullptr;
 	KamataEngine::Camera* camera_ = nullptr;
-
 };

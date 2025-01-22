@@ -62,7 +62,7 @@ void Enemy::Fire() {
 
 void Enemy::Update() {
 
-	Fire();
+	//Fire();
 
 	// キャラクターの移動ベクトル
 	KamataEngine::Vector3 move = {0, 0, 0};
