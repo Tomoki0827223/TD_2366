@@ -6,6 +6,7 @@
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {
+	
 	delete modelPlayer_;
 	delete modelEnemy_;
 	delete modelSkydome_;
@@ -32,12 +33,15 @@ GameScene::~GameScene() {
 }
 
 void GameScene::Initialize() {
+	
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
 	player_ = new Player();
 	skydome_ = new Skydome();
+	skydome2_ = new Skydome2();
+
 	// 3Dモデルの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
 	modelEnemy_ = Model::CreateFromOBJ("enemy", true);
