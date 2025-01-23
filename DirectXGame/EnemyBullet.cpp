@@ -1,4 +1,5 @@
 #include "EnemyBullet.h"
+#include "Player.h"
 #include <cassert>
 
 EnemyBullet::~EnemyBullet() { model_ = nullptr; }
@@ -37,7 +38,11 @@ void EnemyBullet::Update() {
 	worldtransfrom_.UpdateMatarix();
 }
 
-void EnemyBullet::OnCollision() { isDead_ = true; }
+void EnemyBullet::OnCollision(const Player* player_) {
+	(void)player_;
+
+	isDead_ = true;
+}
 
 void EnemyBullet::Draw(const KamataEngine::Camera& camera) {
 

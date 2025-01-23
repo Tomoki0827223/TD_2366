@@ -62,6 +62,9 @@ private:
 	Model* modelPlayerbullet2_ = nullptr;
 	Model* modelPlayerbullet3_ = nullptr;
 
+	Sprite* healthBar_ = nullptr;
+	TextureManager* healthText_ = nullptr;
+
 	// カメラ
 	WorldTransform worldTransform_;
 	Camera camera_;
@@ -82,4 +85,17 @@ private:
 
 	bool isOverFinished_ = false;
 	bool isGameOver_ = false;  // ゲームオーバーのフラグ
+
+	float maxHp = 100000.0f;
+	float nowHp = maxHp;
+	float width = 640.0f;
+
+	uint32_t textureHandle_ = 0;
+	uint32_t textureHandle2_ = 0;
+	Sprite* sprite_ = nullptr;
+	Sprite* sprite2_ = nullptr;
+
+	//// 追加　
+	//bool isInvisible_ = false;
+	//float invisibleTimmer = 10 * 5;
 };

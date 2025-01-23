@@ -19,6 +19,8 @@ GameScene::~GameScene() {
 	delete modelPlayerbullet2_;
 	delete modelPlayerbullet3_;
 	delete modelSkydome2_;
+	delete sprite_;
+	delete sprite2_;
 
 
 	for (EnemyBullet* bullet : enemyBullets_) {
@@ -58,6 +60,11 @@ void GameScene::Initialize() {
 	player_->Initialize(modelPlayer_, &camera_, modelPlayerbullet_, modelPlayerbullet2_, modelPlayerbullet3_, playerPos);
 	skydome_->Initialize(modelSkydome_, &camera_);
 	skydome2_->Initialize(modelSkydome2_, &camera_);
+
+	textureHandle_ = TextureManager::Load("hpBarBuck.png");
+	textureHandle2_ = TextureManager::Load("hpBarFront.png");
+	sprite_ = Sprite::Create(textureHandle_, {100, 50});
+	sprite2_ = Sprite::Create(textureHandle2_, {100, 50});
 
 	// 軸方向表示の表示を有効にする
 	KamataEngine::AxisIndicator::GetInstance()->SetVisible(true);
@@ -134,6 +141,22 @@ void GameScene::Update() {
 		return false;
 	});
 
+
+	Vector2 size = sprite2_->GetSize();
+	size.x = nowHp / maxHp * width;
+	size.y = 10.0f;
+
+	sprite2_->SetSize(size);
+
+	//// 無敵状態のカウントダウン
+	//if (isInvisible_) {
+	//	invisibleTimmer--;
+	//	if (invisibleTimmer <= 0) {
+	//		isInvisible_ = false;
+	//		invisibleTimmer = 10 * 5;
+	//	}
+	//}
+
 	CheckAllCollisions();
 
 	railCamera_->Update();
@@ -175,18 +198,15 @@ void GameScene::Draw() {
 		enemy->Draw(camera_);
 	}
 
-	// 60秒経過したらゲームクリア
-	if (elapsedTime_ >= 20.0f) {
-
-		skydome2_->Draw();
-
-		return;
-	}
-
-	skydome_->Draw();
-
 	for (EnemyBullet* bullet : enemyBullets_) {
 		bullet->Draw(camera_);
+	}
+
+	// 昼夜変更
+	if (elapsedTime_ >= 20.0f) {
+		skydome2_->Draw();
+	} else {
+		skydome_->Draw();
 	}
 
 	// 3Dオブジェクト描画後処理
@@ -198,6 +218,10 @@ void GameScene::Draw() {
 	KamataEngine::Sprite::PreDraw(commandList);
 
 	Sprite::PreDraw(commandList);
+
+	sprite_->Draw();
+	sprite2_->Draw();
+
 	Sprite::PostDraw();
 
 	/// <summary>
@@ -206,7 +230,6 @@ void GameScene::Draw() {
 
 	// スプライト描画後処理
 	KamataEngine::Sprite::PostDraw();
-
 #pragma endregion
 }
 
@@ -334,10 +357,32 @@ void GameScene::CheckAllCollisions() {
 		float combinedRadiusSquared = (radiusA[0] + radiusB[0]) * (radiusA[0] + radiusB[0]);
 
 		if (distanceSquared <= combinedRadiusSquared) {
-			// 自キャラの衝突時コールバックを呼び出す
-			player_->OnCollision();
-			// 敵弾の衝突時コールバックを呼び出す
-			bullet->OnCollision();
+
+
+			nowHp -= rand() % 11 + 1;
+
+			//if (isInvisible_ == false) {
+			//	nowHp -= rand() % 11 + 1;
+			//	isInvisible_ = true;
+			//}
+			
+			if (nowHp <= 0) {
+				nowHp = 0;
+				player_->IsDead();
+
+				// 自キャラの衝突時コールバックを呼び出す
+				player_->OnCollision(bullet);
+				// 敵弾の衝突時コールバックを呼び出す
+				bullet->OnCollision(player_);
+			}
+
+			//if (isInvisible_ == true) {
+			//	invisibleTimmer--;
+			//}
+			//if (invisibleTimmer <= 0) {
+			//	isInvisible_ = false;
+			//	invisibleTimmer = 10 * 5;
+			//}
 		}
 	}
 
@@ -375,7 +420,7 @@ void GameScene::CheckAllCollisions() {
 			float combinedRadiusSquared = (radiusA[1] + radiusB[1]) * (radiusA[1] + radiusB[1]);
 
 			if (distanceSquared <= combinedRadiusSquared) {
-				bullet->OnCollision();
+				bullet->OnCollision(player_);
 				bullet2->OnCollision();
 			}
 		}

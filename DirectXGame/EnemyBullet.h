@@ -2,13 +2,16 @@
 #include <3d/Camera.h>
 #include <3d/Model.h>
 #include <3d/WorldTransform.h>
+
+class Player;
+
 class EnemyBullet {
 public:
 	void Initialize(KamataEngine::Model* model, const KamataEngine::Vector3& position, const KamataEngine::Vector3& velocity);
 
 	void Update();
 
-	void OnCollision();
+	void OnCollision(const Player* player_);
 
 	void Draw(const KamataEngine::Camera& camera);
 

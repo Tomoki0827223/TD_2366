@@ -32,13 +32,11 @@ void Player::Initialize(
 	input_ = KamataEngine::Input::GetInstance();
 }
 
-void Player::OnCollision() {
-	hp_ -= 10; // 衝突時にHPを減少させる
-	if (hp_ < 0) {
-		hp_ = 0;
-	}
-}
+void Player::OnCollision(const EnemyBullet* enemyBullet) {
+	(void)enemyBullet;
 
+	isDead_ = true;
+}
 
 void Player::Attack() {
 	KamataEngine::Model* bulletModel = nullptr;
