@@ -19,9 +19,10 @@ GameScene::~GameScene() {
 	delete modelPlayerbullet2_;
 	delete modelPlayerbullet3_;
 	delete modelSkydome2_;
+	delete modelGround_;
 	delete sprite_;
 	delete sprite2_;
-
+	delete groundModel_;
 
 	for (EnemyBullet* bullet : enemyBullets_) {
 		delete bullet;
@@ -43,6 +44,7 @@ void GameScene::Initialize() {
 	player_ = new Player();
 	skydome_ = new Skydome();
 	skydome2_ = new Skydome2();
+	groundModel_ = new GroundModel();
 
 	// 3Dモデルの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
@@ -56,6 +58,8 @@ void GameScene::Initialize() {
 	modelPlayerbullet2_ = Model::CreateFromOBJ("cube", true);
 	modelPlayerbullet3_ = Model::CreateFromOBJ("TamaPlayer", true);
 
+	modelGround_ = Model::CreateFromOBJ("ground", true);
+
 	camera_.Initialize();
 	player_->Initialize(modelPlayer_, &camera_, modelPlayerbullet_, modelPlayerbullet2_, modelPlayerbullet3_, playerPos);
 	skydome_->Initialize(modelSkydome_, &camera_);
@@ -65,6 +69,18 @@ void GameScene::Initialize() {
 	textureHandle2_ = TextureManager::Load("hpBarFront.png");
 	sprite_ = Sprite::Create(textureHandle_, {100, 50});
 	sprite2_ = Sprite::Create(textureHandle2_, {100, 50});
+
+	groundModel_->Initialize(modelGround_, &camera_);
+
+	// ビットマップフォントの読み込み
+	fontTextureHandle_ = TextureManager::Load("number.png"); // フォントのビットマップ画像を読み込む
+	for (int c = 0; c <= 9; ++c) {
+
+		charSprites_[c] = Sprite::Create(fontTextureHandle_, {c * 32.0f, c *0.0f}); // 各文字のスプライトを作成
+		charSprites_[c]->SetSize({32, 64});
+		charSprites_[c]->SetTextureRect({8, 0}, {32, 64});
+	}
+
 
 	// 軸方向表示の表示を有効にする
 	KamataEngine::AxisIndicator::GetInstance()->SetVisible(true);
@@ -82,10 +98,10 @@ void GameScene::Initialize() {
 
 void GameScene::Update() {
 	// 経過時間を更新
-	elapsedTime_ += 1.0f / 60.0f; // 1フレームあたりの時間を加算 (60FPSの場合)
+	elapsedTime_ -= 1.0f / 24.0f; // 1フレームあたりの時間を加算 (60FPSの場合)
 
 	// 60秒経過したらゲームクリア
-	if (elapsedTime_ >= 60.0f) {
+	if (elapsedTime_ <= 0.0f) {
 		isFinished_ = true;
 		return;
 	}
@@ -164,6 +180,8 @@ void GameScene::Update() {
 	camera_.matView = railCamera_->GetViewProjection().matView;
 	camera_.matProjection = railCamera_->GetViewProjection().matProjection;
 	camera_.TransferMatrix();
+
+	//groundModel_->Update();
 }
 
 void GameScene::Draw() {
@@ -202,12 +220,16 @@ void GameScene::Draw() {
 		bullet->Draw(camera_);
 	}
 
+	//modelGround_->Draw(worldTransform_, camera_);
+
 	// 昼夜変更
-	if (elapsedTime_ >= 20.0f) {
+	if (elapsedTime_ <= 20.0f) {
 		skydome2_->Draw();
 	} else {
 		skydome_->Draw();
 	}
+
+	groundModel_->Draw();
 
 	// 3Dオブジェクト描画後処理
 	KamataEngine::Model::PostDraw();
@@ -221,6 +243,10 @@ void GameScene::Draw() {
 
 	sprite_->Draw();
 	sprite2_->Draw();
+
+	// 制限時間の描画
+	DrawText();
+
 
 	Sprite::PostDraw();
 
@@ -427,4 +453,23 @@ void GameScene::CheckAllCollisions() {
 	}
 
 #pragma endregion
+}
+
+void GameScene::DrawText() {
+
+	// 経過時間を描画
+	int Time = (int)elapsedTime_;
+
+	// 桁をずらす
+	for (int i = 0; i < 3; i++) {
+
+		// 1の位の数字を取得
+		int number = Time % 10;
+		// 1の位の数字を描画
+		charSprites_[2 - i]->SetTextureRect({(float)number * 32, 0}, {32, 64});
+		// 桁をずらす
+		Time /= 10;
+		// ワールドトランスフォームを設定して描画
+		charSprites_[i]->Draw();
+	}
 }

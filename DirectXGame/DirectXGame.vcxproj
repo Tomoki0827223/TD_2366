@@ -113,6 +113,7 @@
     <ClCompile Include="GameClear.cpp" />
     <ClCompile Include="GameOver.cpp" />
     <ClCompile Include="GaneScene.cpp" />
+    <ClCompile Include="GroundModel.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerBullet.cpp" />
@@ -208,6 +209,7 @@
     <ClInclude Include="GameClear.h" />
     <ClInclude Include="GameOver.h" />
     <ClInclude Include="GaneScene.h" />
+    <ClInclude Include="GroundModel.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerBullet.h" />
     <ClInclude Include="PlayerBullet2.h" />

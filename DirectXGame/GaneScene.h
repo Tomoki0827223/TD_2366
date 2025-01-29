@@ -6,6 +6,7 @@
 #include "RailCamera.h"
 #include "Skydome.h"
 #include "Skydome2.h"
+#include "GroundModel.h"
 #include <sstream>
 using namespace KamataEngine;
 
@@ -19,6 +20,8 @@ public:
 	void Draw();
 	// 衝突判定と応答
 	void CheckAllCollisions();
+
+	void DrawText();
 
 	// 弾を追加
 	void AddEnemyBullet(EnemyBullet* enemyBullet);
@@ -35,7 +38,6 @@ public:
     bool IsFinished() const { return isFinished_; }
 	bool IsGameOver() const { return isGameOver_; } // ゲームオーバーのフラグをチェック
 
-
 private:
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -46,6 +48,7 @@ private:
 	Skydome* skydome_ = nullptr;
 	Skydome2* skydome2_ = nullptr;
 	RailCamera* railCamera_ = nullptr;
+	GroundModel* groundModel_ = nullptr;
 
 	Vector3 playerPos = {0, 0, 25};
 	Vector3 RailCamerPos = {0, 0, 0};
@@ -61,6 +64,8 @@ private:
 	Model* modelPlayerbullet_ = nullptr;
 	Model* modelPlayerbullet2_ = nullptr;
 	Model* modelPlayerbullet3_ = nullptr;
+
+	Model* modelGround_ = nullptr;
 
 	Sprite* healthBar_ = nullptr;
 	TextureManager* healthText_ = nullptr;
@@ -81,7 +86,7 @@ private:
 	std::list<Enemy*> enemies_;
 
 	bool isFinished_ = false;
-	float elapsedTime_ = 0.0f; // 経過時間
+	float elapsedTime_ = 120.0f; // 経過時間
 
 	bool isOverFinished_ = false;
 	bool isGameOver_ = false;  // ゲームオーバーのフラグ
@@ -98,4 +103,7 @@ private:
 	//// 追加　
 	//bool isInvisible_ = false;
 	//float invisibleTimmer = 10 * 5;
+
+	uint32_t fontTextureHandle_;                    // フォントのテクスチャハンドル
+	Sprite* charSprites_[10] = {0};              // 制限時間（秒）
 };
