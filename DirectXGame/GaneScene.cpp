@@ -174,7 +174,7 @@ void GameScene::Update() {
 	sprite2_->SetSize(size);
 	hertSprite2_->SetSize(hertSize);
 
-	if (elapse5dTime_ <= 115.0f) {
+	if (elapsedTime_ <= 115.0f) {
 
 			nowHertHP -= rand() % 11 + 1;
 	}
