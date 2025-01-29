@@ -95,10 +95,19 @@ private:
 	float nowHp = maxHp;
 	float width = 640.0f;
 
+	float maxHertHP = 1000.0f;
+	float nowHertHP = maxHertHP;
+	float hertWidth = 256.0f;
+
 	uint32_t textureHandle_ = 0;
 	uint32_t textureHandle2_ = 0;
 	Sprite* sprite_ = nullptr;
 	Sprite* sprite2_ = nullptr;
+
+	Sprite* hertSprite_ = nullptr;
+	uint32_t hertTextureHandle_ = 0;
+	Sprite* hertSprite2_ = nullptr;
+	uint32_t hertTextureHandle2_ = 0;
 
 	//// 追加　
 	//bool isInvisible_ = false;

@@ -70,6 +70,11 @@ void GameScene::Initialize() {
 	sprite_ = Sprite::Create(textureHandle_, {100, 50});
 	sprite2_ = Sprite::Create(textureHandle2_, {100, 50});
 
+	hertTextureHandle_ = TextureManager::Load("hert.png");
+	hertSprite_ = Sprite::Create(hertTextureHandle_, {900, 50});
+	hertTextureHandle2_ = TextureManager::Load("hertHP.png");
+	hertSprite2_ = Sprite::Create(hertTextureHandle2_, {900, 50});
+
 	groundModel_->Initialize(modelGround_, &camera_);
 
 	// ビットマップフォントの読み込み
@@ -162,7 +167,17 @@ void GameScene::Update() {
 	size.x = nowHp / maxHp * width;
 	size.y = 10.0f;
 
+	Vector2 hertSize = hertSprite2_->GetSize();
+	hertSize.y = nowHertHP / maxHertHP * hertWidth;
+	hertSize.x = 256.0f;
+
 	sprite2_->SetSize(size);
+	hertSprite2_->SetSize(hertSize);
+
+	if (elapse5dTime_ <= 115.0f) {
+
+			nowHertHP -= rand() % 11 + 1;
+	}
 
 	//// 無敵状態のカウントダウン
 	//if (isInvisible_) {
@@ -243,6 +258,8 @@ void GameScene::Draw() {
 
 	sprite_->Draw();
 	sprite2_->Draw();
+	hertSprite_->Draw();
+	hertSprite2_->Draw();
 
 	// 制限時間の描画
 	DrawText();
@@ -383,7 +400,6 @@ void GameScene::CheckAllCollisions() {
 		float combinedRadiusSquared = (radiusA[0] + radiusB[0]) * (radiusA[0] + radiusB[0]);
 
 		if (distanceSquared <= combinedRadiusSquared) {
-
 
 			nowHp -= rand() % 11 + 1;
 
