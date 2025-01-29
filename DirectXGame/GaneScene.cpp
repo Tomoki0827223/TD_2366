@@ -62,8 +62,10 @@ void GameScene::Initialize() {
 
 	camera_.Initialize();
 	player_->Initialize(modelPlayer_, &camera_, modelPlayerbullet_, modelPlayerbullet2_, modelPlayerbullet3_, playerPos);
+
 	skydome_->Initialize(modelSkydome_, &camera_);
 	skydome2_->Initialize(modelSkydome2_, &camera_);
+	groundModel_->Initialize(modelGround_, &camera_);
 
 	textureHandle_ = TextureManager::Load("hpBarBuck.png");
 	textureHandle2_ = TextureManager::Load("hpBarFront.png");
@@ -75,7 +77,6 @@ void GameScene::Initialize() {
 	hertTextureHandle2_ = TextureManager::Load("hertHP.png");
 	hertSprite2_ = Sprite::Create(hertTextureHandle2_, {900, 50});
 
-	groundModel_->Initialize(modelGround_, &camera_);
 
 	// ビットマップフォントの読み込み
 	fontTextureHandle_ = TextureManager::Load("number.png"); // フォントのビットマップ画像を読み込む
@@ -168,16 +169,11 @@ void GameScene::Update() {
 	size.y = 10.0f;
 
 	Vector2 hertSize = hertSprite2_->GetSize();
-	hertSize.y = nowHertHP / maxHertHP * hertWidth;
-	hertSize.x = 256.0f;
+	hertSize.x = nowHertHP / maxHertHP * hertWidth;
+	hertSize.y = 256.0f;
 
 	sprite2_->SetSize(size);
 	hertSprite2_->SetSize(hertSize);
-
-	if (elapsedTime_ <= 115.0f) {
-
-			nowHertHP -= rand() % 11 + 1;
-	}
 
 	//// 無敵状態のカウントダウン
 	//if (isInvisible_) {
