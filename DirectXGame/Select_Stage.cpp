@@ -27,11 +27,11 @@ void Select_Stage::Initialize() {
 	skydome_->Initialize(modelSkydome_, &camera_);
 
 	textureHandle_ = KamataEngine::TextureManager::Load("alStart.png");
-	sprite_ = KamataEngine::Sprite::Create(textureHandle_, {50, 25});
+	sprite_ = KamataEngine::Sprite::Create(textureHandle_, {0, 0});
 }
 
 void Select_Stage::Update() {
-	if (input_->TriggerKey(DIK_1)) {
+	if (input_->TriggerKey(DIK_SPACE)) {
 		finished_ = true;
 		StageNumber_ = 0;
 		skydome_->Update();

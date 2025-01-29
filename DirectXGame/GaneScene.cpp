@@ -23,6 +23,8 @@ GameScene::~GameScene() {
 	delete sprite_;
 	delete sprite2_;
 	delete groundModel_;
+	//delete modelWall_;
+	//delete wall_;
 
 	for (EnemyBullet* bullet : enemyBullets_) {
 		delete bullet;
@@ -45,6 +47,7 @@ void GameScene::Initialize() {
 	skydome_ = new Skydome();
 	skydome2_ = new Skydome2();
 	groundModel_ = new GroundModel();
+	//wall_ = new Wall();
 
 	// 3Dモデルの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
@@ -60,12 +63,15 @@ void GameScene::Initialize() {
 
 	modelGround_ = Model::CreateFromOBJ("ground", true);
 
+	//modelWall_ = Model::CreateFromOBJ("kabe", true);
+
 	camera_.Initialize();
 	player_->Initialize(modelPlayer_, &camera_, modelPlayerbullet_, modelPlayerbullet2_, modelPlayerbullet3_, playerPos);
 
 	skydome_->Initialize(modelSkydome_, &camera_);
 	skydome2_->Initialize(modelSkydome2_, &camera_);
 	groundModel_->Initialize(modelGround_, &camera_);
+	//wall_->Initialize(modelWall_, &camera_);
 
 	textureHandle_ = TextureManager::Load("hpBarBuck.png");
 	textureHandle2_ = TextureManager::Load("hpBarFront.png");
@@ -241,6 +247,8 @@ void GameScene::Draw() {
 	}
 
 	groundModel_->Draw();
+
+	//wall_->Draw();
 
 	// 3Dオブジェクト描画後処理
 	KamataEngine::Model::PostDraw();

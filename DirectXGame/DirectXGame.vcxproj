@@ -124,6 +124,7 @@
     <ClCompile Include="Skydome2.cpp" />
     <ClCompile Include="Skydome_Sence.cpp" />
     <ClCompile Include="TitleSence.cpp" />
+    <ClCompile Include="Wall.cpp" />
     <ClCompile Include="worldTransformEx.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -219,6 +220,7 @@
     <ClInclude Include="Skydome2.h" />
     <ClInclude Include="Skydome_Sence.h" />
     <ClInclude Include="TitleSence.h" />
+    <ClInclude Include="Wall.h" />
     <ClInclude Include="worldTransformEx.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

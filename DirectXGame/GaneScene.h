@@ -7,6 +7,7 @@
 #include "Skydome.h"
 #include "Skydome2.h"
 #include "GroundModel.h"
+#include "Wall.h"
 #include <sstream>
 using namespace KamataEngine;
 
@@ -49,6 +50,7 @@ private:
 	Skydome2* skydome2_ = nullptr;
 	RailCamera* railCamera_ = nullptr;
 	GroundModel* groundModel_ = nullptr;
+	//Wall* wall_ = nullptr;
 
 	Vector3 playerPos = {0, 0, 25};
 	Vector3 RailCamerPos = {0, 0, 0};
@@ -65,6 +67,7 @@ private:
 	Model* modelPlayerbullet2_ = nullptr;
 	Model* modelPlayerbullet3_ = nullptr;
 
+	Model* modelWall_ = nullptr;
 	Model* modelGround_ = nullptr;
 
 	Sprite* healthBar_ = nullptr;
