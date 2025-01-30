@@ -49,14 +49,17 @@ private:
 	Skydome* skydome_ = nullptr;
 	Skydome2* skydome2_ = nullptr;
 	RailCamera* railCamera_ = nullptr;
-	GroundModel* groundModel_ = nullptr;
+	GroundModel* ground_ = nullptr;
 	Wall* wall_ = nullptr;
+	Wall* wall2_ = nullptr;
 
-	Vector3 playerPos = {0, 0, 25};
+	Vector3 playerPos = {0, -4, 20};
 	Vector3 RailCamerPos = {0, 0, 0};
 	Vector3 RailCamerRad = {0, 0, 0};
 
-	Vector3 WallPos = {0, 0, 25};
+	Vector3 WallPos = {20, 0, 0};
+	Vector3 WallPos2 = {-20, 0, 0};
+	Vector3 groundPos = {0, 5, 0};
 
 	Model* modelPlayer_ = nullptr;
 	Model* modelEnemy_ = nullptr;
@@ -70,6 +73,7 @@ private:
 	Model* modelPlayerbullet3_ = nullptr;
 
 	Model* modelWall_ = nullptr;
+	Model* modelWall2_ = nullptr;
 	Model* modelGround_ = nullptr;
 
 	Sprite* healthBar_ = nullptr;

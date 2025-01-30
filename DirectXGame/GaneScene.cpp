@@ -22,9 +22,12 @@ GameScene::~GameScene() {
 	delete modelGround_;
 	delete sprite_;
 	delete sprite2_;
-	delete groundModel_;
+	delete ground_;
 	delete modelWall_;
 	delete wall_;
+	delete wall2_;
+	delete hertSprite_;
+	delete hertSprite2_;
 
 	for (EnemyBullet* bullet : enemyBullets_) {
 		delete bullet;
@@ -46,8 +49,9 @@ void GameScene::Initialize() {
 	player_ = new Player();
 	skydome_ = new Skydome();
 	skydome2_ = new Skydome2();
-	groundModel_ = new GroundModel();
+	ground_ = new GroundModel();
 	wall_ = new Wall();
+	wall2_ = new Wall();
 
 	// 3Dモデルの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
@@ -64,14 +68,16 @@ void GameScene::Initialize() {
 	modelGround_ = Model::CreateFromOBJ("ground", true);
 
 	modelWall_ = Model::CreateFromOBJ("kabe", true);
+	modelWall2_ = Model::CreateFromOBJ("kabe", true);
 
 	camera_.Initialize();
 	player_->Initialize(modelPlayer_, &camera_, modelPlayerbullet_, modelPlayerbullet2_, modelPlayerbullet3_, playerPos);
 
 	skydome_->Initialize(modelSkydome_, &camera_);
 	skydome2_->Initialize(modelSkydome2_, &camera_);
-	groundModel_->Initialize(modelGround_, &camera_);
+	ground_->Initialize(modelGround_, &camera_, groundPos);
 	wall_->Initialize(modelWall_, &camera_, WallPos);
+	wall2_->Initialize(modelWall2_, &camera_, WallPos2);
 
 	textureHandle_ = TextureManager::Load("hpBarBuck.png");
 	textureHandle2_ = TextureManager::Load("hpBarFront.png");
@@ -109,6 +115,11 @@ void GameScene::Initialize() {
 
 
 void GameScene::Update() {
+
+	wall_->Update();
+	wall2_->Update();
+	ground_->Update();
+
 	// 経過時間を更新
 	elapsedTime_ -= 1.0f / 24.0f; // 1フレームあたりの時間を加算 (60FPSの場合)
 
@@ -192,30 +203,11 @@ void GameScene::Update() {
 
 	CheckAllCollisions();
 
-	//railCamera_->Update();
-	//player_->Update();
-	//camera_.matView = railCamera_->GetViewProjection().matView;
-	//camera_.matProjection = railCamera_->GetViewProjection().matProjection;
-	//camera_.TransferMatrix();
-
-	#ifdef _DEBUG
-
-	if (input_->TriggerKey(DIK_V)) {
-		isDebugCameraActive_ = !isDebugCameraActive_;
-	}
-#endif
-
-	if (isDebugCameraActive_) {
-		debugCamera_->Update();
-		camera_.matView = debugCamera_->GetCamera().matView;
-		camera_.matProjection = debugCamera_->GetCamera().matProjection;
-		camera_.TransferMatrix();
-
-	} else {
-		camera_.UpdateMatrix();
-	}
-
-	//groundModel_->Update();
+	railCamera_->Update();
+	player_->Update();
+	camera_.matView = railCamera_->GetViewProjection().matView;
+	camera_.matProjection = railCamera_->GetViewProjection().matProjection;
+	camera_.TransferMatrix();
 }
 
 void GameScene::Draw() {
@@ -263,9 +255,10 @@ void GameScene::Draw() {
 		skydome_->Draw();
 	}
 
-	groundModel_->Draw();
+	ground_->Draw();
 
 	wall_->Draw();
+	wall2_->Draw();
 
 	// 3Dオブジェクト描画後処理
 	KamataEngine::Model::PostDraw();
