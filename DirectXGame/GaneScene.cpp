@@ -192,11 +192,28 @@ void GameScene::Update() {
 
 	CheckAllCollisions();
 
-	railCamera_->Update();
-	player_->Update();
-	camera_.matView = railCamera_->GetViewProjection().matView;
-	camera_.matProjection = railCamera_->GetViewProjection().matProjection;
-	camera_.TransferMatrix();
+	//railCamera_->Update();
+	//player_->Update();
+	//camera_.matView = railCamera_->GetViewProjection().matView;
+	//camera_.matProjection = railCamera_->GetViewProjection().matProjection;
+	//camera_.TransferMatrix();
+
+	#ifdef _DEBUG
+
+	if (input_->TriggerKey(DIK_V)) {
+		isDebugCameraActive_ = !isDebugCameraActive_;
+	}
+#endif
+
+	if (isDebugCameraActive_) {
+		debugCamera_->Update();
+		camera_.matView = debugCamera_->GetCamera().matView;
+		camera_.matProjection = debugCamera_->GetCamera().matProjection;
+		camera_.TransferMatrix();
+
+	} else {
+		camera_.UpdateMatrix();
+	}
 
 	//groundModel_->Update();
 }
