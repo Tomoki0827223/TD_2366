@@ -56,6 +56,7 @@ void GameScene::Initialize() {
 	// 3Dモデルの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
 	modelEnemy_ = Model::CreateFromOBJ("enemy", true);
+	modelEnemyType1_ = Model::CreateFromOBJ("enemyType1", true);
 
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 	modelSkydome2_ = Model::CreateFromOBJ("skydome2", true);
@@ -64,6 +65,7 @@ void GameScene::Initialize() {
 	modelPlayerbullet_ = Model::CreateFromOBJ("TamaPlayer", true);
 	modelPlayerbullet2_ = Model::CreateFromOBJ("cube", true);
 	modelPlayerbullet3_ = Model::CreateFromOBJ("TamaPlayer", true);
+
 
 	modelGround_ = Model::CreateFromOBJ("ground", true);
 
@@ -296,9 +298,23 @@ void GameScene::AddEnemyBullet(EnemyBullet* bullet)
 	enemyBullets_.push_back(bullet);
 }
 
-void GameScene::EnemySpawn(const Vector3& position) {
+void GameScene::EnemySpawn(const Vector3& position, int type) {
+	Enemy* newEnemy = nullptr;
 
-	Enemy* newEnemy = new Enemy();
+	switch (type) {
+	case 1:
+		newEnemy = new EnemyType1();
+		newEnemy->Initialize(modelEnemyType1_, modelEnemyBullet_, position);
+		break;
+	case 2:
+		//newEnemy = new EnemyType2();
+		break;
+	default:
+		newEnemy = new Enemy();
+		newEnemy->Initialize(modelEnemy_, modelEnemyBullet_, position);
+		break;
+	}
+
 	newEnemy->Initialize(modelEnemy_, modelEnemyBullet_, position);
 
 	// 敵キャラに自キャラのアドレスを渡す
@@ -308,6 +324,7 @@ void GameScene::EnemySpawn(const Vector3& position) {
 
 	enemies_.push_back(newEnemy);
 }
+   
 
 void GameScene::LoadEnemyPopData() {
 
@@ -324,7 +341,6 @@ void GameScene::LoadEnemyPopData() {
 }
 
 void GameScene::UpdateEnemyPopCommands() {
-
 	// 待機処理
 	if (timerflag) {
 		timer--;
@@ -338,9 +354,8 @@ void GameScene::UpdateEnemyPopCommands() {
 	// 1行分の文字列を入れる変数
 	std::string line;
 
-	// コマンド実行ループ　
+	// コマンド実行ループ
 	while (getline(enemyPopCommands, line)) {
-
 		// 1行分の文字列をストリームに変換して解析しやすくする
 		std::istringstream line_stream(line);
 
@@ -355,7 +370,6 @@ void GameScene::UpdateEnemyPopCommands() {
 		}
 
 		if (word.find("POP") == 0) {
-
 			// x座標
 			getline(line_stream, word, ',');
 			float x = (float)std::atof(word.c_str());
@@ -368,10 +382,13 @@ void GameScene::UpdateEnemyPopCommands() {
 			getline(line_stream, word, ',');
 			float z = (float)std::atof(word.c_str());
 
-			// 敵を発生させる
-			EnemySpawn(Vector3(x, y, z));
+			// 敵の種類
+			getline(line_stream, word, ',');
+			int type = std::atoi(word.c_str());
 
-			// WAITコマンド
+			// 敵を発生させる
+			EnemySpawn(Vector3(x, y, z), type);
+
 		} else if (word.find("WAIT") == 0) {
 			getline(line_stream, word, ',');
 
@@ -379,7 +396,6 @@ void GameScene::UpdateEnemyPopCommands() {
 			int32_t waitTime = atoi(word.c_str());
 
 			// 待機開始
-
 			timerflag = true;
 			timer = waitTime;
 
@@ -388,6 +404,7 @@ void GameScene::UpdateEnemyPopCommands() {
 		}
 	}
 }
+   
 
 void GameScene::CheckAllCollisions() {
 	KamataEngine::Vector3 posA[3]{}, posB[3]{};
