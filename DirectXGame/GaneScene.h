@@ -24,6 +24,7 @@ public:
 	void CheckAllCollisions();
 
 	void DrawText();
+	void DrawHertText();
 
 	// 弾を追加
 	void AddEnemyBullet(EnemyBullet* enemyBullet);
@@ -112,7 +113,7 @@ private:
 	float nowHp = maxHp;
 	float width = 640.0f;
 
-	float maxHertHP = 1000.0f;
+	float maxHertHP = 100.0f;
 	float nowHertHP = maxHertHP;
 	float hertWidth = 256.0f;
 
@@ -132,6 +133,9 @@ private:
 
 	uint32_t fontTextureHandle_;                    // フォントのテクスチャハンドル
 	Sprite* charSprites_[10] = {0};              // 制限時間（秒）
+
+	uint32_t fontTextureHandle2_; // フォントのテクスチャハンドル
+	Sprite* charSprites2_[10] = {0}; // 制限時間（秒）
 
 	bool isDebugCameraActive_ = false;
 

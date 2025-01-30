@@ -100,9 +100,16 @@ void GameScene::Initialize() {
 	fontTextureHandle_ = TextureManager::Load("number.png"); // フォントのビットマップ画像を読み込む
 	for (int c = 0; c <= 9; ++c) {
 
-		charSprites_[c] = Sprite::Create(fontTextureHandle_, {c * 32.0f, c *0.0f}); // 各文字のスプライトを作成
+		charSprites_[c] = Sprite::Create(fontTextureHandle_, {c * 32.0f, c * 0.0f}); // 各文字のスプライトを作成
 		charSprites_[c]->SetSize({32, 64});
 		charSprites_[c]->SetTextureRect({8, 0}, {32, 64});
+	}
+
+	fontTextureHandle2_ = TextureManager::Load("number.png"); // フォントのビットマップ画像を読み込む
+	for (int c = 0; c <= 9; ++c) {
+		charSprites2_[c] = Sprite::Create(fontTextureHandle2_, {c * 32.0f, c * 0.0f}); // 各文字のスプライトを作成
+		charSprites2_[c]->SetSize({32, 64});
+		charSprites2_[c]->SetTextureRect({8, 0}, {32, 64});
 	}
 
 
@@ -316,6 +323,7 @@ void GameScene::Draw() {
 	// 制限時間の描画
 	DrawText();
 
+	DrawHertText();
 
 	Sprite::PostDraw();
 
@@ -656,5 +664,32 @@ void GameScene::DrawText() {
 		Time /= 10;
 		// ワールドトランスフォームを設定して描画
 		charSprites_[i]->Draw();
+	}
+}
+
+void GameScene::DrawHertText() {
+	// HPを描画
+	int HP = (int)nowHertHP;
+
+	// 桁の幅（数字が32px幅なので適宜調整）
+	const float digitWidth = 32.0f;
+	// 数字の表示位置（例: 左上に固定する場合）
+	const Vector2 basePos = {1000.0f, 240.0f};
+
+	// 桁をずらす
+	for (int i = 0; i < 3; i++) {
+		// 1の位の数字を取得
+		int number = HP % 10;
+		// 1の位の数字を描画
+		charSprites2_[2 - i]->SetTextureRect({(float)number * 32, 0}, {32, 64});
+
+		// スプライトの位置を設定
+		charSprites2_[2 - i]->SetPosition({basePos.x + i * digitWidth, basePos.y});
+
+		// ワールドトランスフォームを設定して描画
+		charSprites2_[2 - i]->Draw();
+
+		// 桁をずらす
+		HP /= 10;
 	}
 }
