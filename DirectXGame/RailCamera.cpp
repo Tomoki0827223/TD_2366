@@ -1,5 +1,7 @@
 #include "RailCamera.h"
+#include <Windows.h>
 #include <cmath>
+#include <unordered_map>
 
 void RailCamera::Initialize(const KamataEngine::Vector3& pos, const KamataEngine::Vector3& rad) {
 	worldtransfrom_.translation_ = pos;
@@ -11,10 +13,21 @@ void RailCamera::Initialize(const KamataEngine::Vector3& pos, const KamataEngine
 
 void RailCamera::Update() {
 	// ユーザー入力に基づいてカメラの位置と回転を更新
-	float deltaX = GetInput("MoveX+"); // X軸方向の正の移動入力
-	deltaX -= GetInput("MoveX-");      // X軸方向の負の移動入力
-	float deltaY = GetInput("MoveY+"); // Y軸方向の正の移動入力
-	deltaY -= GetInput("MoveY-");      // Y軸方向の負の移動入力
+	float deltaX = 0.0f;
+	float deltaY = 0.0f;
+
+	//if (GetAsyncKeyState('D') & 0x8000) {
+	//	deltaX += 1.0f; // X軸方向の正の移動入力
+	//}
+	//if (GetAsyncKeyState('A') & 0x8000) {
+	//	deltaX -= 1.0f; // X軸方向の負の移動入力
+	//}
+	//if (GetAsyncKeyState('W') & 0x8000) {
+	//	deltaY += 1.0f; // Y軸方向の正の移動入力
+	//}
+	//if (GetAsyncKeyState('S') & 0x8000) {
+	//	deltaY -= 1.0f; // Y軸方向の負の移動入力
+	//}
 
 	// 回転速度のスケーリングファクター
 	const float rotationSpeed = 0.02f;
@@ -38,21 +51,4 @@ void RailCamera::Update() {
 	camera_.UpdateMatrix();
 	camera_.matView = Inverse(worldtransfrom_.matWorld_);
 	camera_.TransferMatrix();
-}
-
-float RailCamera::GetInput(const std::string& inputName) {
-	static std::unordered_map<std::string, int> keyMap = {
-	    {"MoveX+", 'S'}, // 'D'キーで右移動
-	    {"MoveX-", 'W'}, // 'A'キーで左移動
-	    {"MoveY+", 'D'}, // 'W'キーで上移動
-	    {"MoveY-", 'A'}  // 'S'キーで下移動
-	};
-
-	if (keyMap.find(inputName) != keyMap.end()) {
-		if (GetAsyncKeyState(keyMap[inputName]) & 0x8000) {
-			return 1.0f; // キーが押されている場合
-		}
-	}
-
-	return 0.0f; // キーが押されていない場合
 }

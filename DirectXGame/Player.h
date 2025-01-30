@@ -10,6 +10,7 @@
 #include <cassert>
 
 class Enemy;
+class Enemy2;
 class EnemyBullet;
 
 class Player {
@@ -32,6 +33,7 @@ public:
 
     // 新しいメソッド
 	void SetEnemy(Enemy* enemy) { enemy_ = enemy; }
+	void SetEnemy(Enemy2* enemy2) { enemy2_ = enemy2; }
 
 	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
 	const std::list<PlayerBullet2*>& GetBullets2() const { return bullets2_; }
@@ -43,6 +45,7 @@ private:
 
 
 	Enemy* enemy_ = nullptr;
+	Enemy2* enemy2_ = nullptr;
 
 	KamataEngine::Model* model_ = nullptr;
 	KamataEngine::Camera* camera_ = nullptr;
@@ -59,4 +62,9 @@ private:
 	// AABBの幅と高さを定義
 	static constexpr float kWidth = 1.0f;
 	static constexpr float kHeight = 1.0f;
+
+	const float kScreenLeft = -13.0f;
+	const float kScreenRight = 13.0f;
+	const float kScreenTop = 10.0f;
+	const float kScreenBottom = -10.0f;
 };

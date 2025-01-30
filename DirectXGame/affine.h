@@ -5,6 +5,11 @@
 #include <stdio.h>
 using namespace KamataEngine;
 
+enum class Phase {
+	Approach, // 接近する
+	Leave,    // 離脱する
+};
+
 Matrix4x4 MatrixMultipry(const Matrix4x4& matrix1, const Matrix4x4& matrix2);
 
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);

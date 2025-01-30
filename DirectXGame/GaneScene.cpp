@@ -9,6 +9,7 @@ GameScene::~GameScene() {
 	
 	delete modelPlayer_;
 	delete modelEnemy_;
+	delete modelEnemy2_;
 	delete modelSkydome_;
 	delete player_;
 	delete skydome_;
@@ -26,8 +27,7 @@ GameScene::~GameScene() {
 	delete modelWall_;
 	delete wall_;
 	delete wall2_;
-	delete hertSprite_;
-	delete hertSprite2_;
+	delete modelWall2_;
 
 	for (EnemyBullet* bullet : enemyBullets_) {
 		delete bullet;
@@ -38,6 +38,11 @@ GameScene::~GameScene() {
 		delete enemy;
 	}
 	enemies_.clear(); // 追加
+
+	for (Enemy2* enemy : enemies2_) {
+		delete enemy;
+	}
+	enemies2_.clear(); // 追加
 }
 
 void GameScene::Initialize() {
@@ -56,6 +61,7 @@ void GameScene::Initialize() {
 	// 3Dモデルの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
 	modelEnemy_ = Model::CreateFromOBJ("enemy", true);
+	modelEnemy2_ = Model::CreateFromOBJ("Candy", true);
 
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 	modelSkydome2_ = Model::CreateFromOBJ("skydome2", true);
@@ -111,6 +117,7 @@ void GameScene::Initialize() {
 	player_->SetParent(&railCamera_->GetWorldTransform());
 
 	LoadEnemyPopData();
+	LoadEnemy2PopData();
 }
 
 
@@ -156,8 +163,27 @@ void GameScene::Update() {
 		}
 	}
 
+	// 敵の更新と削除判定
+	for (auto it = enemies2_.begin(); it != enemies2_.end();) {
+		Enemy2* enemy = *it;
+		enemy->Update();
+
+		// 敵の位置を取得
+		Vector3 enemyPosition = enemy->GetWorldPosition();
+
+		// 敵がプレイヤーの後ろ側にいるかどうかを判定
+		if (enemyPosition.z < playerPosition.z) {
+			// 敵を削除
+			delete enemy;
+			it = enemies2_.erase(it);
+		} else {
+			++it;
+		}
+	}
+
 	// 他の更新処理
 	UpdateEnemyPopCommands();
+	UpdateEnemy2PopCommands();
 
 	for (EnemyBullet* bullet : enemyBullets_) {
 		bullet->Update();
@@ -180,6 +206,14 @@ void GameScene::Update() {
 		return false;
 	});
 
+	// 敵の削除処理を追加
+	enemies2_.remove_if([](Enemy2* enemy) {
+		if (enemy->IsDead()) {
+			delete enemy;
+			return true;
+		}
+		return false;
+	});
 
 	Vector2 size = sprite2_->GetSize();
 	size.x = nowHp / maxHp * width;
@@ -239,6 +273,10 @@ void GameScene::Draw() {
 	player_->Draw(camera_);
 
 	for (Enemy* enemy : enemies_) {
+		enemy->Draw(camera_);
+	}
+
+	for (Enemy2* enemy : enemies2_) {
 		enemy->Draw(camera_);
 	}
 
@@ -389,6 +427,99 @@ void GameScene::UpdateEnemyPopCommands() {
 	}
 }
 
+void GameScene::Enemy2Spawn(const Vector3& position) {
+
+	Enemy2* newEnemy = new Enemy2();
+	newEnemy->Initialize(modelEnemy2_, modelEnemyBullet_, position);
+
+	// 敵キャラに自キャラのアドレスを渡す
+	newEnemy->SetPlayer(player_);
+	player_->SetEnemy(newEnemy);
+	newEnemy->SetGameScene(this);
+
+	enemies2_.push_back(newEnemy);
+}
+
+void GameScene::LoadEnemy2PopData() {
+
+	// ファイルを開く
+	std::ifstream file;
+	file.open("Resources/enemy2Pop.csv");
+	assert(file.is_open());
+
+	// ファイルの内容を文字列ストリームにコピー
+	enemy2PopCommands << file.rdbuf();
+
+	// ファイルを閉じる
+	file.close();
+}
+
+void GameScene::UpdateEnemy2PopCommands() {
+
+	// 待機処理
+	if (timerflag) {
+		timer--;
+		if (timer <= 0) {
+			// 待機完了
+			timerflag = false;
+		}
+		return;
+	}
+
+	// 1行分の文字列を入れる変数
+	std::string line;
+
+	// コマンド実行ループ　
+	while (getline(enemy2PopCommands, line)) {
+
+		// 1行分の文字列をストリームに変換して解析しやすくする
+		std::istringstream line_stream(line);
+
+		std::string word;
+		// ,区切りで行の先頭文字を取得
+		getline(line_stream, word, ',');
+
+		// "//"から始まる行はコメント
+		if (word.find("//") == 0) {
+			// コメント行を飛ばす
+			continue;
+		}
+
+		if (word.find("POP") == 0) {
+
+			// x座標
+			getline(line_stream, word, ',');
+			float x = (float)std::atof(word.c_str());
+
+			// y座標
+			getline(line_stream, word, ',');
+			float y = (float)std::atof(word.c_str());
+
+			// z座標
+			getline(line_stream, word, ',');
+			float z = (float)std::atof(word.c_str());
+
+			// 敵を発生させる
+			Enemy2Spawn(Vector3(x, y, z));
+
+			// WAITコマンド
+		} else if (word.find("WAIT") == 0) {
+			getline(line_stream, word, ',');
+
+			// 待ち時間
+			int32_t waitTime = atoi(word.c_str());
+
+			// 待機開始
+
+			timerflag = true;
+			timer = waitTime;
+
+			// コマンドループを抜ける
+			break;
+		}
+	}
+}
+
 void GameScene::CheckAllCollisions() {
 	KamataEngine::Vector3 posA[3]{}, posB[3]{};
 	float radiusA[3] = {0.8f, 2.0f, 0.8f}; // プレイヤーの半径（固定値）
@@ -447,6 +578,30 @@ void GameScene::CheckAllCollisions() {
 #pragma region 自弾と敵キャラの当たり判定
 
 	for (Enemy* enemy : enemies_) {
+		// 敵
+		posA[1] = enemy->GetWorldPosition();
+
+		for (PlayerBullet* bullet : playerBullets) {
+			posB[1] = bullet->GetWorldPosition();
+			float distanceSquared = (posA[1].x - posB[1].x) * (posA[1].x - posB[1].x) + (posA[1].y - posB[1].y) * (posA[1].y - posB[1].y) + (posA[1].z - posB[1].z) * (posA[1].z - posB[1].z);
+			float combinedRadiusSquared = (radiusA[2] + radiusB[2]) * (radiusA[2] + radiusB[2]);
+
+			if (distanceSquared <= combinedRadiusSquared) {
+
+				nowHertHP -= rand() % 81 + 1;
+
+				enemy->OnCollision();
+				bullet->OnCollision();
+				enemy->SetDead();
+			}
+		}
+	}
+
+#pragma endregion
+
+#pragma region 自弾と敵2キャラの当たり判定
+
+	for (Enemy2* enemy : enemies2_) {
 		// 敵
 		posA[1] = enemy->GetWorldPosition();
 

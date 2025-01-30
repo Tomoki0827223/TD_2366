@@ -91,12 +91,10 @@ AABB Player::GetAABB() {
 void Player::SetParent(const KamataEngine::WorldTransform* parent) { worldtransform_.parent_ = parent; }
 
 void Player::Update() {
-
+	// 入力処理
 	if (input_->TriggerKey(DIK_1)) {
 		SwitchBulletType(BulletType::Normal);
-
 	} else if (input_->TriggerKey(DIK_2)) {
-	
 		SwitchBulletType(BulletType::Special);
 	}
 
@@ -133,7 +131,7 @@ void Player::Update() {
 
 	KamataEngine::Vector3 move = {0, 0, 0};
 	const float kCharacterSpeed = 0.3f;
-	const float kRotSpeed = 0.02f;
+	//const float kRotSpeed = 0.02f;
 
 	if (input_->PushKey(DIK_LEFT)) {
 		move.x -= kCharacterSpeed;
@@ -141,25 +139,40 @@ void Player::Update() {
 		move.x += kCharacterSpeed;
 	}
 
-	if (input_->PushKey(DIK_UP)) {
-		move.y += kCharacterSpeed;
-	} else if (input_->PushKey(DIK_DOWN)) {
-		move.y -= kCharacterSpeed;
-	}
+	//if (input_->PushKey(DIK_UP)) {
+	//	move.y += kCharacterSpeed;
+	//} else if (input_->PushKey(DIK_DOWN)) {
+	//	move.y -= kCharacterSpeed;
+	//}
 
-	if (input_->PushKey(DIK_A)) {
-		worldtransform_.rotation_.y += kRotSpeed;
-	} else if (input_->PushKey(DIK_D)) {
-		worldtransform_.rotation_.y -= kRotSpeed;
-	}
+	//if (input_->PushKey(DIK_A)) {
+	//	worldtransform_.rotation_.y += kRotSpeed;
+	//} else if (input_->PushKey(DIK_D)) {
+	//	worldtransform_.rotation_.y -= kRotSpeed;
+	//}
 
+	// 位置を更新
 	worldtransform_.translation_.x += move.x;
 	worldtransform_.translation_.y += move.y;
+
+	// 画面の境界を超えないように制限
+	if (worldtransform_.translation_.x < kScreenLeft) {
+		worldtransform_.translation_.x = kScreenLeft;
+	} else if (worldtransform_.translation_.x > kScreenRight) {
+		worldtransform_.translation_.x = kScreenRight;
+	}
+
+	if (worldtransform_.translation_.y < kScreenBottom) {
+		worldtransform_.translation_.y = kScreenBottom;
+	} else if (worldtransform_.translation_.y > kScreenTop) {
+		worldtransform_.translation_.y = kScreenTop;
+	}
 
 	worldtransform_.UpdateMatarix();
 
 	Attack();
 }
+
 
 void Player::Draw(const KamataEngine::Camera& camera) {
 	model_->Draw(worldtransform_, camera);
