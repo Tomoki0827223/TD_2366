@@ -122,4 +122,7 @@ private:
 	Sprite* charSprites_[10] = {0};              // 制限時間（秒）
 
 	bool isDebugCameraActive_ = false;
+
+	// デバックカメラ
+	DebugCamera* debugCamera_ = nullptr;
 };
