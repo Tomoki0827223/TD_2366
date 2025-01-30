@@ -1,6 +1,7 @@
 #pragma once
 #include "AABB.h"
 #include "Enemy.h"
+#include "EnemyType1.h"
 #include "KamataEngine.h"
 #include "Player.h"
 #include "RailCamera.h"
@@ -26,11 +27,13 @@ public:
 
 	// 弾を追加
 	void AddEnemyBullet(EnemyBullet* enemyBullet);
+	
+	void EnemySpawn(const Vector3& position, int type);
+	
 	const std::list<EnemyBullet*>& GetEnemyBullets() const { return enemyBullets_; }
 
 	void LoadEnemyPopData();
 	void UpdateEnemyPopCommands();
-	void EnemySpawn(const Vector3& position);
 
 	int32_t timer = 0;
 	bool timerflag = true;
@@ -46,6 +49,7 @@ private:
 
 	Player* player_ = nullptr;
 	// Enemy* enemy_ = nullptr;
+	// EnemyType1* enemyType1_ = nullptr;
 	Skydome* skydome_ = nullptr;
 	Skydome2* skydome2_ = nullptr;
 	RailCamera* railCamera_ = nullptr;
@@ -63,6 +67,7 @@ private:
 
 	Model* modelPlayer_ = nullptr;
 	Model* modelEnemy_ = nullptr;
+	Model* modelEnemyType1_ = nullptr;
 	
 	Model* modelSkydome_ = nullptr;
 	Model* modelSkydome2_ = nullptr;
@@ -93,6 +98,7 @@ private:
 	std::stringstream enemyPopCommands;
 
 	std::list<Enemy*> enemies_;
+	std::list<EnemyType1*> enemiesType1_;
 
 	bool isFinished_ = false;
 	float elapsedTime_ = 120.0f; // 経過時間

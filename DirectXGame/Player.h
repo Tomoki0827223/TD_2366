@@ -11,6 +11,7 @@
 
 class Enemy;
 class EnemyBullet;
+class EnemyType1;
 
 class Player {
 public:
@@ -32,6 +33,8 @@ public:
 
     // 新しいメソッド
 	void SetEnemy(Enemy* enemy) { enemy_ = enemy; }
+	// 新しいメソッド
+	void SetEnemy(EnemyType1* enemy) { enemyType1_ = enemy; }
 
 	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
 	const std::list<PlayerBullet2*>& GetBullets2() const { return bullets2_; }
@@ -43,6 +46,7 @@ private:
 
 
 	Enemy* enemy_ = nullptr;
+	EnemyType1* enemyType1_ = nullptr;
 
 	KamataEngine::Model* model_ = nullptr;
 	KamataEngine::Camera* camera_ = nullptr;

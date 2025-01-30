@@ -9,6 +9,7 @@ GameScene::~GameScene() {
 	
 	delete modelPlayer_;
 	delete modelEnemy_;
+	delete modelEnemyType1_;
 	delete modelSkydome_;
 	delete player_;
 	delete skydome_;
@@ -38,6 +39,11 @@ GameScene::~GameScene() {
 		delete enemy;
 	}
 	enemies_.clear(); // 追加
+
+	for (EnemyType1* enemyType1 : enemiesType1_) {
+		delete enemyType1;
+	}
+	enemiesType1_.clear(); // 追加
 }
 
 void GameScene::Initialize() {
@@ -56,6 +62,7 @@ void GameScene::Initialize() {
 	// 3Dモデルの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
 	modelEnemy_ = Model::CreateFromOBJ("enemy", true);
+	modelEnemyType1_ = Model::CreateFromOBJ("enemyType1", true);
 
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 	modelSkydome2_ = Model::CreateFromOBJ("skydome2", true);
@@ -156,6 +163,24 @@ void GameScene::Update() {
 		}
 	}
 
+	// 敵の更新と削除判定
+	for (auto it = enemiesType1_.begin(); it != enemiesType1_.end();) {
+		EnemyType1* enemy = *it;
+		enemy->Update();
+
+		// 敵の位置を取得
+		Vector3 enemyPosition = enemy->GetWorldPosition();
+
+		// 敵がプレイヤーの後ろ側にいるかどうかを判定
+		if (enemyPosition.z < playerPosition.z) {
+			// 敵を削除
+			delete enemy;
+			it = enemiesType1_.erase(it);
+		} else {
+			++it;
+		}
+	}
+
 	// 他の更新処理
 	UpdateEnemyPopCommands();
 
@@ -180,6 +205,14 @@ void GameScene::Update() {
 		return false;
 	});
 
+	// 敵の削除処理を追加
+	enemiesType1_.remove_if([](EnemyType1* enemy) {
+		if (enemy->IsDead()) {
+			delete enemy;
+			return true;
+		}
+		return false;
+	});
 
 	Vector2 size = sprite2_->GetSize();
 	size.x = nowHp / maxHp * width;
@@ -242,6 +275,10 @@ void GameScene::Draw() {
 		enemy->Draw(camera_);
 	}
 
+	for (EnemyType1* enemyType1 : enemiesType1_) {
+		enemyType1->Draw(camera_);
+	}
+
 	for (EnemyBullet* bullet : enemyBullets_) {
 		bullet->Draw(camera_);
 	}
@@ -296,10 +333,32 @@ void GameScene::AddEnemyBullet(EnemyBullet* bullet)
 	enemyBullets_.push_back(bullet);
 }
 
-void GameScene::EnemySpawn(const Vector3& position) {
+void GameScene::EnemySpawn(const Vector3& position, int type) {
+	Enemy* newEnemy = nullptr;
+	EnemyType1* newEnemyType1 = nullptr;
 
-	Enemy* newEnemy = new Enemy();
-	newEnemy->Initialize(modelEnemy_, modelEnemyBullet_, position);
+	switch (type) {
+	case 1:
+		newEnemyType1 = new EnemyType1();
+		break;
+	case 2:
+		newEnemy = new Enemy();
+		break;
+
+	// 他の種類の敵を追加
+	default:
+		newEnemy = new Enemy();
+		break;
+	}
+
+	if (newEnemy != nullptr) {
+		newEnemy->Initialize(modelEnemy_, modelEnemyBullet_, position);
+	} else {
+		// エラーを適切に処理する
+	}
+
+	//newEnemy->Initialize(modelEnemy_, modelEnemyBullet_, position);
+	newEnemyType1->Initialize(modelEnemyType1_, position);
 
 	// 敵キャラに自キャラのアドレスを渡す
 	newEnemy->SetPlayer(player_);
@@ -307,7 +366,15 @@ void GameScene::EnemySpawn(const Vector3& position) {
 	newEnemy->SetGameScene(this);
 
 	enemies_.push_back(newEnemy);
+
+
+	newEnemyType1->SetPlayer(player_);
+	player_->SetEnemy(newEnemyType1);
+	newEnemyType1->SetGameScene(this);
+
+	enemiesType1_.push_back(newEnemyType1);
 }
+   
 
 void GameScene::LoadEnemyPopData() {
 
@@ -324,7 +391,6 @@ void GameScene::LoadEnemyPopData() {
 }
 
 void GameScene::UpdateEnemyPopCommands() {
-
 	// 待機処理
 	if (timerflag) {
 		timer--;
@@ -338,9 +404,8 @@ void GameScene::UpdateEnemyPopCommands() {
 	// 1行分の文字列を入れる変数
 	std::string line;
 
-	// コマンド実行ループ　
+	// コマンド実行ループ
 	while (getline(enemyPopCommands, line)) {
-
 		// 1行分の文字列をストリームに変換して解析しやすくする
 		std::istringstream line_stream(line);
 
@@ -355,7 +420,6 @@ void GameScene::UpdateEnemyPopCommands() {
 		}
 
 		if (word.find("POP") == 0) {
-
 			// x座標
 			getline(line_stream, word, ',');
 			float x = (float)std::atof(word.c_str());
@@ -368,10 +432,13 @@ void GameScene::UpdateEnemyPopCommands() {
 			getline(line_stream, word, ',');
 			float z = (float)std::atof(word.c_str());
 
-			// 敵を発生させる
-			EnemySpawn(Vector3(x, y, z));
+			// 敵の種類
+			getline(line_stream, word, ',');
+			int type = std::atoi(word.c_str());
 
-			// WAITコマンド
+			// 敵を発生させる
+			EnemySpawn(Vector3(x, y, z), type);
+
 		} else if (word.find("WAIT") == 0) {
 			getline(line_stream, word, ',');
 
@@ -379,7 +446,6 @@ void GameScene::UpdateEnemyPopCommands() {
 			int32_t waitTime = atoi(word.c_str());
 
 			// 待機開始
-
 			timerflag = true;
 			timer = waitTime;
 
