@@ -120,4 +120,6 @@ private:
 
 	uint32_t fontTextureHandle_;                    // フォントのテクスチャハンドル
 	Sprite* charSprites_[10] = {0};              // 制限時間（秒）
+
+	bool isDebugCameraActive_ = false;
 };
