@@ -50,11 +50,13 @@ private:
 	Skydome2* skydome2_ = nullptr;
 	RailCamera* railCamera_ = nullptr;
 	GroundModel* groundModel_ = nullptr;
-	//Wall* wall_ = nullptr;
+	Wall* wall_ = nullptr;
 
 	Vector3 playerPos = {0, 0, 25};
 	Vector3 RailCamerPos = {0, 0, 0};
 	Vector3 RailCamerRad = {0, 0, 0};
+
+	Vector3 WallPos = {0, 0, 25};
 
 	Model* modelPlayer_ = nullptr;
 	Model* modelEnemy_ = nullptr;
