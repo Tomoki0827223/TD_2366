@@ -45,6 +45,14 @@ void Player::OnCollision(const Enemy* enemy)
 	isDead_ = true;
 }
 
+void Player::UpdateInvincibility() {
+	if (isInvincible) {
+		invincibleTimer--;
+		if (invincibleTimer <= 0) {
+			isInvincible = false;
+		}
+	}
+}
 
 void Player::Attack() {
 	KamataEngine::Model* bulletModel = nullptr;

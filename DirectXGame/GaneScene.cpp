@@ -156,6 +156,8 @@ void GameScene::Update() {
 	
 	}
 
+	player_->UpdateInvincibility();
+
 	// プレイヤーの位置を取得
 	Vector3 playerPosition = player_->GetWorldPosition();
 
@@ -684,16 +686,21 @@ void GameScene::CheckAllCollisions() {
 		float combinedRadiusSquared = (radiusA[1] + radiusB[1]) * (radiusA[1] + radiusB[1]);
 
 		if (distanceSquared <= combinedRadiusSquared) {
+			if (!player_->isInvincible) {
+				nowHp -= rand() % 11 + 1;
 
-			nowHp -= rand() % 11 + 1;
+				if (nowHp <= 0) {
+					nowHp = 0;
+					player_->IsDead();
 
-			if (nowHp <= 0) {
-				nowHp = 0;
-				player_->IsDead();
+					// プレイヤーを無敵状態に設定
+					player_->isInvincible = true;
+					player_->invincibleTimer = player_->invincibleDuration;
 
-				// 衝突時の処理
-				player_->OnCollision(enemy);
-				enemy->OnCollision(player_);
+					// 衝突時の処理
+					player_->OnCollision(enemy);
+					enemy->OnCollision(player_);
+				}
 			}
 		}
 	}

@@ -41,6 +41,14 @@ public:
 	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
 	const std::list<PlayerBullet2*>& GetBullets2() const { return bullets2_; }
 	bool IsDead() const { return isDead_; } // HPがゼロになったかどうかをチェッ
+	
+	    // 無敵状態を管理する変数
+	bool isInvincible = false;
+	int invincibleTimer = 60;
+	const int invincibleDuration = 0; // 無敵状態の持続時間（フレーム数）
+
+	// 無敵状態を更新するメソッド
+	void UpdateInvincibility();
 
 private:
 	
