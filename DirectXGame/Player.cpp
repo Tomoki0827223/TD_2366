@@ -10,6 +10,7 @@ Player::~Player() {
 	}
 }
 
+
 void Player::Initialize(
     KamataEngine::Model* model, KamataEngine::Camera* camera, KamataEngine::Model* normalBulletModel, KamataEngine::Model* specialBulletModel, KamataEngine::Model* type2BulletModel,
     const KamataEngine::Vector3& position) {
@@ -37,6 +38,13 @@ void Player::OnCollision(const EnemyBullet* enemyBullet) {
 
 	isDead_ = true;
 }
+
+void Player::OnCollision(const Enemy* enemy) 
+{
+	(void)enemy;
+	isDead_ = true;
+}
+
 
 void Player::Attack() {
 	KamataEngine::Model* bulletModel = nullptr;

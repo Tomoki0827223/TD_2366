@@ -10,6 +10,7 @@ GameScene::~GameScene() {
 	delete modelPlayer_;
 	delete modelEnemy_;
 	delete modelEnemy2_;
+	delete modelEnemy3_;
 	delete modelSkydome_;
 	delete player_;
 	delete skydome_;
@@ -43,6 +44,10 @@ GameScene::~GameScene() {
 		delete enemy;
 	}
 	enemies2_.clear(); // 追加
+
+	for (Enemy3* enemy : enemies3_) {
+		delete enemy;
+	}
 }
 
 void GameScene::Initialize() {
@@ -60,15 +65,16 @@ void GameScene::Initialize() {
 
 	// 3Dモデルの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
-	modelEnemy_ = Model::CreateFromOBJ("enemy", true);
+	modelEnemy_ = Model::CreateFromOBJ("chocolate", true);
 	modelEnemy2_ = Model::CreateFromOBJ("Candy", true);
+	modelEnemy3_ = Model::CreateFromOBJ("enemy", true);
 
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 	modelSkydome2_ = Model::CreateFromOBJ("skydome2", true);
 
 	modelEnemyBullet_ = Model::CreateFromOBJ("Tama", true);
-	modelPlayerbullet_ = Model::CreateFromOBJ("TamaPlayer", true);
-	modelPlayerbullet2_ = Model::CreateFromOBJ("cube", true);
+	modelPlayerbullet_ = Model::CreateFromOBJ("Playerbullet1", true);
+	modelPlayerbullet2_ = Model::CreateFromOBJ("Playerbullet2", true);
 	modelPlayerbullet3_ = Model::CreateFromOBJ("TamaPlayer", true);
 
 	modelGround_ = Model::CreateFromOBJ("ground", true);
@@ -147,6 +153,7 @@ void GameScene::Update() {
 	if (player_->IsDead()) {
 		isGameOver_ = true;
 		return;
+	
 	}
 
 	// プレイヤーの位置を取得
@@ -188,9 +195,28 @@ void GameScene::Update() {
 		}
 	}
 
+	// 敵の更新と削除判定
+	for (auto it = enemies3_.begin(); it != enemies3_.end();) {
+		Enemy3* enemy = *it;
+		enemy->Update();
+
+		// 敵の位置を取得
+		Vector3 enemyPosition = enemy->GetWorldPosition();
+
+		// 敵がプレイヤーの後ろ側にいるかどうかを判定
+		if (enemyPosition.z < playerPosition.z) {
+			// 敵を削除
+			delete enemy;
+			it = enemies3_.erase(it);
+		} else {
+			++it;
+		}
+	}
+
 	// 他の更新処理
 	UpdateEnemyPopCommands();
 	UpdateEnemy2PopCommands();
+	UpdateEnemy3PopCommands();
 
 	for (EnemyBullet* bullet : enemyBullets_) {
 		bullet->Update();
@@ -215,6 +241,15 @@ void GameScene::Update() {
 
 	// 敵の削除処理を追加
 	enemies2_.remove_if([](Enemy2* enemy) {
+		if (enemy->IsDead()) {
+			delete enemy;
+			return true;
+		}
+		return false;
+	});
+
+	// 敵の削除処理を追加
+	enemies3_.remove_if([](Enemy3* enemy) {
 		if (enemy->IsDead()) {
 			delete enemy;
 			return true;
@@ -284,6 +319,10 @@ void GameScene::Draw() {
 	}
 
 	for (Enemy2* enemy : enemies2_) {
+		enemy->Draw(camera_);
+	}
+	
+	for (Enemy3* enemy : enemies3_) {
 		enemy->Draw(camera_);
 	}
 
@@ -528,6 +567,99 @@ void GameScene::UpdateEnemy2PopCommands() {
 	}
 }
 
+void GameScene::Enemy3Spawn(const Vector3& position) {
+
+	Enemy3* newEnemy = new Enemy3();
+	newEnemy->Initialize(modelEnemy3_, modelEnemyBullet_, position);
+
+	// 敵キャラに自キャラのアドレスを渡す
+	newEnemy->SetPlayer(player_);
+	player_->SetEnemy(newEnemy);
+	newEnemy->SetGameScene(this);
+
+	enemies3_.push_back(newEnemy);
+}
+
+void GameScene::LoadEnemy3PopData() {
+
+	// ファイルを開く
+	std::ifstream file;
+	file.open("Resources/enemy3Pop.csv");
+	assert(file.is_open());
+
+	// ファイルの内容を文字列ストリームにコピー
+	enemy2PopCommands << file.rdbuf();
+
+	// ファイルを閉じる
+	file.close();
+}
+
+void GameScene::UpdateEnemy3PopCommands() {
+
+	// 待機処理
+	if (timerflag) {
+		timer--;
+		if (timer <= 0) {
+			// 待機完了
+			timerflag = false;
+		}
+		return;
+	}
+
+	// 1行分の文字列を入れる変数
+	std::string line;
+
+	// コマンド実行ループ　
+	while (getline(enemy2PopCommands, line)) {
+
+		// 1行分の文字列をストリームに変換して解析しやすくする
+		std::istringstream line_stream(line);
+
+		std::string word;
+		// ,区切りで行の先頭文字を取得
+		getline(line_stream, word, ',');
+
+		// "//"から始まる行はコメント
+		if (word.find("//") == 0) {
+			// コメント行を飛ばす
+			continue;
+		}
+
+		if (word.find("POP") == 0) {
+
+			// x座標
+			getline(line_stream, word, ',');
+			float x = (float)std::atof(word.c_str());
+
+			// y座標
+			getline(line_stream, word, ',');
+			float y = (float)std::atof(word.c_str());
+
+			// z座標
+			getline(line_stream, word, ',');
+			float z = (float)std::atof(word.c_str());
+
+			// 敵を発生させる
+			Enemy3Spawn(Vector3(x, y, z));
+
+			// WAITコマンド
+		} else if (word.find("WAIT") == 0) {
+			getline(line_stream, word, ',');
+
+			// 待ち時間
+			int32_t waitTime = atoi(word.c_str());
+
+			// 待機開始
+
+			timerflag = true;
+			timer = waitTime;
+
+			// コマンドループを抜ける
+			break;
+		}
+	}
+}
+
 void GameScene::CheckAllCollisions() {
 	KamataEngine::Vector3 posA[3]{}, posB[3]{};
 	float radiusA[3] = {0.8f, 2.0f, 0.8f}; // プレイヤーの半径（固定値）
@@ -535,6 +667,38 @@ void GameScene::CheckAllCollisions() {
 
 	// 自弾
 	const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();
+
+#pragma region プレイヤーと敵キャラの当たり判定
+
+	for (Enemy* enemy : enemies_) {
+		// 敵の座標
+		posA[1] = enemy->GetWorldPosition();
+
+		// プレイヤーの座標
+		posB[1] = player_->GetWorldPosition();
+
+		// 2つの球の中心間の距離の二乗を計算
+		float distanceSquared = (posA[1].x - posB[1].x) * (posA[1].x - posB[1].x) + (posA[1].y - posB[1].y) * (posA[1].y - posB[1].y) + (posA[1].z - posB[1].z) * (posA[1].z - posB[1].z);
+
+		// 半径の合計の二乗
+		float combinedRadiusSquared = (radiusA[1] + radiusB[1]) * (radiusA[1] + radiusB[1]);
+
+		if (distanceSquared <= combinedRadiusSquared) {
+
+			nowHp -= rand() % 11 + 1;
+
+			if (nowHp <= 0) {
+				nowHp = 0;
+				player_->IsDead();
+
+				// 衝突時の処理
+				player_->OnCollision(enemy);
+				enemy->OnCollision(player_);
+			}
+		}
+	}
+
+#pragma endregion
 
 #pragma region 自キャラと敵弾の当たり判定
 
@@ -596,7 +760,13 @@ void GameScene::CheckAllCollisions() {
 
 			if (distanceSquared <= combinedRadiusSquared) {
 
-				nowHertHP -= rand() % 81 + 1;
+				// ハートのHPを増やす
+				if (nowHertHP < 100) {
+					nowHertHP += 10; // 増やす量は適宜調整
+					if (nowHertHP > 100) {
+						nowHertHP = 100; // HPが100を超えないように制限
+					}
+				}
 
 				enemy->OnCollision();
 				bullet->OnCollision();
@@ -610,6 +780,36 @@ void GameScene::CheckAllCollisions() {
 #pragma region 自弾と敵2キャラの当たり判定
 
 	for (Enemy2* enemy : enemies2_) {
+		// 敵
+		posA[1] = enemy->GetWorldPosition();
+
+		for (PlayerBullet* bullet : playerBullets) {
+			posB[1] = bullet->GetWorldPosition();
+			float distanceSquared = (posA[1].x - posB[1].x) * (posA[1].x - posB[1].x) + (posA[1].y - posB[1].y) * (posA[1].y - posB[1].y) + (posA[1].z - posB[1].z) * (posA[1].z - posB[1].z);
+			float combinedRadiusSquared = (radiusA[2] + radiusB[2]) * (radiusA[2] + radiusB[2]);
+
+			if (distanceSquared <= combinedRadiusSquared) {
+
+				// ハートのHPを増やす
+				if (nowHertHP < 100) {
+					nowHertHP += 10; // 増やす量は適宜調整
+					if (nowHertHP > 100) {
+						nowHertHP = 100; // HPが100を超えないように制限
+					}
+				}
+
+				enemy->OnCollision();
+				bullet->OnCollision();
+				enemy->SetDead();
+			}
+		}
+	}
+
+#pragma endregion
+
+#pragma region 自弾と敵3キャラの当たり判定
+
+	for (Enemy3* enemy : enemies3_) {
 		// 敵
 		posA[1] = enemy->GetWorldPosition();
 

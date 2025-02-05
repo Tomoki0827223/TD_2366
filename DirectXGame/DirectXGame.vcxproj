@@ -110,6 +110,7 @@
     <ClCompile Include="affine.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Enemy2.cpp" />
+    <ClCompile Include="Enemy3.cpp" />
     <ClCompile Include="EnemyBullet.cpp" />
     <ClCompile Include="GameClear.cpp" />
     <ClCompile Include="GameOver.cpp" />
@@ -208,6 +209,7 @@
     <ClInclude Include="affine.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Enemy2.h" />
+    <ClInclude Include="Enemy3.h" />
     <ClInclude Include="EnemyBullet.h" />
     <ClInclude Include="GameClear.h" />
     <ClInclude Include="GameOver.h" />

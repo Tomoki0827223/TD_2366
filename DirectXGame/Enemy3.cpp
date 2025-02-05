@@ -1,9 +1,7 @@
-#include "Enemy.h"
+#include "Enemy3.h"
 #include "Player.h"
 
-Enemy::~Enemy() {}
-
-void Enemy::Initialize(KamataEngine::Model* model,KamataEngine::Model* TamaModel, const KamataEngine::Vector3& pos) {
+void Enemy3::Initialize(KamataEngine::Model* model, KamataEngine::Model* TamaModel, const KamataEngine::Vector3& pos) {
 	assert(model);
 	model_ = model;
 	modelbullet_ = TamaModel;
@@ -12,7 +10,7 @@ void Enemy::Initialize(KamataEngine::Model* model,KamataEngine::Model* TamaModel
 	worldtransfrom_.Initialize();
 }
 
-KamataEngine::Vector3 Enemy::GetWorldPosition() {
+KamataEngine::Vector3 Enemy3::GetWorldPosition() {
 
 	// ワールド座標を入れる変数
 	KamataEngine::Vector3 worldPos;
@@ -24,15 +22,9 @@ KamataEngine::Vector3 Enemy::GetWorldPosition() {
 	return worldPos;
 }
 
-void Enemy::OnCollision() { isDead_ = true; }
+void Enemy3::OnCollision() { isDead_ = true; }
 
-void Enemy::OnCollision(const Player* player) 
-{
-	(void)player;
-	isDead_ = true;
-}
-
-void Enemy::Fire() {
+void Enemy3::Fire() {
 
 	assert(player_);
 
@@ -66,9 +58,9 @@ void Enemy::Fire() {
 	}
 }
 
-void Enemy::Update() {
+void Enemy3::Update() {
 
-	//Fire();
+	// Fire();
 
 	// キャラクターの移動ベクトル
 	KamataEngine::Vector3 move = {0, 0, 0};
@@ -77,10 +69,9 @@ void Enemy::Update() {
 	// 離脱
 	KamataEngine::Vector3 eliminationSpeed = {-0.3f, -0.3f, -0.3f};
 
-	 
 	switch (phase_) {
 	case Phase::Approach:
-	
+
 	default:
 		// 移動(ベクトルを加算)
 		worldtransfrom_.translation_.z += accessSpeed.z;
@@ -98,4 +89,4 @@ void Enemy::Update() {
 	worldtransfrom_.UpdateMatarix();
 }
 
-void Enemy::Draw(const KamataEngine::Camera& camera) { model_->Draw(worldtransfrom_, camera); }
+void Enemy3::Draw(const KamataEngine::Camera& camera) { model_->Draw(worldtransfrom_, camera); }

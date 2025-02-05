@@ -2,6 +2,7 @@
 #include "AABB.h"
 #include "Enemy.h"
 #include "Enemy2.h"
+#include "Enemy3.h"
 #include "KamataEngine.h"
 #include "Player.h"
 #include "RailCamera.h"
@@ -38,6 +39,10 @@ public:
 	void UpdateEnemy2PopCommands();
 	void Enemy2Spawn(const Vector3& position);
 
+	void LoadEnemy3PopData();
+	void UpdateEnemy3PopCommands();
+	void Enemy3Spawn(const Vector3& position);
+
 	int32_t timer = 0;
 	bool timerflag = true;
 
@@ -70,6 +75,7 @@ private:
 	Model* modelPlayer_ = nullptr;
 	Model* modelEnemy_ = nullptr;
 	Model* modelEnemy2_ = nullptr;
+	Model* modelEnemy3_ = nullptr;
 	
 	Model* modelSkydome_ = nullptr;
 	Model* modelSkydome2_ = nullptr;
@@ -102,6 +108,7 @@ private:
 
 	std::list<Enemy*> enemies_;
 	std::list<Enemy2*> enemies2_;
+	std::list<Enemy3*> enemies3_;
 
 	bool isFinished_ = false;
 	float elapsedTime_ = 120.0f; // 経過時間
@@ -109,11 +116,11 @@ private:
 	bool isOverFinished_ = false;
 	bool isGameOver_ = false;  // ゲームオーバーのフラグ
 
-	float maxHp = 100000.0f;
+	float maxHp = 100.0f;
 	float nowHp = maxHp;
 	float width = 640.0f;
 
-	float maxHertHP = 100.0f;
+	float maxHertHP = 50.0f;
 	float nowHertHP = maxHertHP;
 	float hertWidth = 256.0f;
 

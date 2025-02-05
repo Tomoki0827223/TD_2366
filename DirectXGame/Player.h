@@ -11,6 +11,7 @@
 
 class Enemy;
 class Enemy2;
+class Enemy3;
 class EnemyBullet;
 
 class Player {
@@ -23,6 +24,7 @@ public:
 	    const KamataEngine::Vector3& position);
 
 	void OnCollision(const EnemyBullet* enemyBullet);
+	void OnCollision(const Enemy* enemy);
 	
 	void Update();
 	void Draw(const KamataEngine::Camera& camera);
@@ -34,6 +36,7 @@ public:
     // 新しいメソッド
 	void SetEnemy(Enemy* enemy) { enemy_ = enemy; }
 	void SetEnemy(Enemy2* enemy2) { enemy2_ = enemy2; }
+	void SetEnemy(Enemy3* enemy3) { enemy3_ = enemy3; }
 
 	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
 	const std::list<PlayerBullet2*>& GetBullets2() const { return bullets2_; }
@@ -46,6 +49,7 @@ private:
 
 	Enemy* enemy_ = nullptr;
 	Enemy2* enemy2_ = nullptr;
+	Enemy3* enemy3_ = nullptr;
 
 	KamataEngine::Model* model_ = nullptr;
 	KamataEngine::Camera* camera_ = nullptr;

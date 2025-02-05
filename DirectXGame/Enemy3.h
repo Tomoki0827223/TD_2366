@@ -10,16 +10,19 @@
 class Player;
 class GameScene;
 
-class Enemy {
+// enum class Phase {
+//	Approach, // 接近する
+//	Leave,    // 離脱する
+// };
+
+class Enemy3 {
 public:
 	void Initialize(KamataEngine::Model* model, KamataEngine::Model* TamaModel, const KamataEngine::Vector3& pos);
 	void Update();
 	void Draw(const KamataEngine::Camera& camera);
-	~Enemy();
 	void Fire();
 
 	void OnCollision();
-	void OnCollision(const Player* player);
 
 	KamataEngine::Vector3 GetWorldPosition();
 
