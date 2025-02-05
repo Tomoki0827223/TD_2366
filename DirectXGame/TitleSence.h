@@ -1,14 +1,12 @@
 #pragma once
-#include <audio/Audio.h>
-#include <3d/Model.h>
-#include <2d/Sprite.h>
-#include <3d/WorldTransform.h>
-#include <3d/Camera.h>
 #include "Skydome_Sence.h"
 #include "input/Input.h"
+#include <2d/Sprite.h>
+#include <3d/Camera.h>
+#include <3d/Model.h>
+#include <3d/WorldTransform.h>
 #include <KamataEngine.h>
-
-
+#include <audio/Audio.h>
 
 /// <summary>
 /// タイトルシーン
@@ -33,8 +31,11 @@ public:
 	/// </summary>
 	void Draw();
 
+	//void StopBGM();
+
 	bool IsSelectFinished() const { return isFinished_; }
 	bool IsGameFinished() const { return isGameFinished_; }
+	//const IssoundBgmTitle() const { return soundBGM_; }
 
 	// 現在表示されているスプライトを管理する変数
 	size_t currentSpriteIndex = 0;
@@ -44,6 +45,7 @@ public:
 	void InitializeSprites();
 
 private:
+
 	// 最初の角度[度]
 	static inline const float kWalkMotionAngleStart = 5.0f;
 	// 最後の角度[度]
@@ -53,8 +55,6 @@ private:
 	// タイマー
 	float Timer_ = 0.0f;
 
-	bool isFinished_ = false;
-	bool isGameFinished_ = false;
 	KamataEngine::DirectXCommon* dxCommon_ = nullptr;
 	KamataEngine::WorldTransform titleWorldTransform_;
 	KamataEngine::WorldTransform titleWorldTransformFont_;
@@ -73,9 +73,20 @@ private:
 	KamataEngine::Sprite* sprite4_ = nullptr;
 	// 天球
 	Skydome_Sence* skydome_ = nullptr;
-	
+
+	uint32_t soundSE_ = 0;
+	uint32_t soundSEHanlde_ = 0;
+	uint32_t soundSE1_ = 0;
+	uint32_t soundSEHanlde1_ = 0;
+	//uint32_t soundBGM_ = 0;
+
+	bool isBGMPlaying_ = false;
+	bool isFinished_ = false;
+	bool isGameFinished_ = false;
+
 	KamataEngine::Model* modelSkydome_ = nullptr;
 
 	KamataEngine::Input* input_ = nullptr;
 	KamataEngine::Audio* audio_ = nullptr;
+
 };

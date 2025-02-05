@@ -30,6 +30,8 @@ private:
 	KamataEngine::Input* input_ = nullptr;
 	KamataEngine::Audio* audio_ = nullptr;
 
+	uint32_t soundSE_ = 0;
+
 	// ワールドトランスフォーム
 	KamataEngine::WorldTransform worldTransform_;
 	// ビュープロジェクション

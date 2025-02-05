@@ -163,7 +163,7 @@ void ChangeScene() {
 			selectStage = new Select_Stage();
 			selectStage->Initialize();
 		}
-		
+
 		if (titleScene && titleScene->IsGameFinished()) {
 			delete titleScene;
 			titleScene = nullptr;
@@ -218,7 +218,6 @@ void ChangeScene() {
 		break;
 	}
 }
-
 
 void UpdateScene() 
 {

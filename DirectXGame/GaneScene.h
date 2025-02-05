@@ -11,6 +11,7 @@
 #include "GroundModel.h"
 #include "Wall.h"
 #include <sstream>
+#include "TitleSence.h"
 using namespace KamataEngine;
 
 class GameScene {
@@ -53,6 +54,7 @@ public:
 	
     bool IsFinished() const { return isFinished_; }
 	bool IsGameOver() const { return isGameOver_; } // ゲームオーバーのフラグをチェック
+	bool IsBGMplaying() const { return isBGMPlaying_; }
 
 private:
 	DirectXCommon* dxCommon_ = nullptr;
@@ -95,6 +97,7 @@ private:
 
 	Sprite* healthBar_ = nullptr;
 	TextureManager* healthText_ = nullptr;
+	TitleSence* titleSence_ = nullptr;
 
 	// カメラ
 	WorldTransform worldTransform_;
@@ -158,4 +161,15 @@ private:
 
 	// デバックカメラ
 	DebugCamera* debugCamera_ = nullptr;
+
+	uint32_t soundBGM1_ = 0;
+	uint32_t soundBGMHanlde_1 = 0;
+	bool isBGMPlaying_ = false;
+
+	uint32_t soundSE_ = 0;
+	uint32_t soundSEHanlde_ = 0;
+
+	uint32_t soundSE1_ = 0;
+	uint32_t soundSE2_ = 0;
+	uint32_t soundSE3_ = 0;
 };

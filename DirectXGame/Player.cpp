@@ -40,15 +40,18 @@ void Player::OnCollision(const Enemy* enemy) {
 }
 
 void Player::Attack() {
+
 	if (input_->TriggerKey(DIK_SPACE)) {
 		KamataEngine::Model* bulletModel = nullptr;
 
 		switch (currentBulletType_) {
 		case BulletType::Normal:
 			bulletModel = normalBulletModel_;
+
 			break;
 		case BulletType::Special:
 			bulletModel = specialBulletModel_;
+
 			break;
 		case BulletType::Type2:
 			bulletModel = type2BulletModel_;

@@ -29,6 +29,7 @@ GameScene::~GameScene() {
 	delete wall_;
 	delete wall2_;
 	delete modelWall2_;
+	delete titleSence_;
 
 	for (EnemyBullet* bullet : enemyBullets_) {
 		delete bullet;
@@ -48,6 +49,10 @@ GameScene::~GameScene() {
 	for (Enemy3* enemy : enemies3_) {
 		delete enemy;
 	}
+
+	// BGMを停止
+	audio_->StopWave(soundBGMHanlde_1);
+	isBGMPlaying_ = false;
 }
 
 void GameScene::Initialize() {
@@ -62,6 +67,9 @@ void GameScene::Initialize() {
 	ground_ = new GroundModel();
 	wall_ = new Wall();
 	wall2_ = new Wall();
+	titleSence_ = new TitleSence();
+
+	//titleSence_->StopBGM();
 
 	// 3Dモデルの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
@@ -125,6 +133,15 @@ void GameScene::Initialize() {
 		charSprites2_[c]->SetTextureRect({8, 0}, {32, 64});
 	}
 
+	soundBGM1_ = audio_->LoadWave("audio/gameBGM.wav");
+	soundSE_ = audio_->LoadWave("audio/itemget.wav");
+	soundSE1_ = audio_->LoadWave("audio/itemget2.wav");
+	soundSE2_ = audio_->LoadWave("audio/se_pyun1.wav");
+	soundSE3_ = audio_->LoadWave("audio/se_pyun2.wav");
+
+	// BGMを再生し、再生中フラグをtrueに設定
+	soundBGMHanlde_1 = audio_->PlayWave(soundBGM1_, true, 0.5f);
+	isBGMPlaying_ = true;
 
 	// 軸方向表示の表示を有効にする
 	//KamataEngine::AxisIndicator::GetInstance()->SetVisible(true);
@@ -143,6 +160,17 @@ void GameScene::Initialize() {
 
 
 void GameScene::Update() {
+
+	// 音声再生（フラグを使用してBGMが再生中でない場合のみ再生）
+	if (!isBGMPlaying_) {
+		// BGMを再生し、再生中フラグをtrueに設定
+		soundBGMHanlde_1 = audio_->PlayWave(soundBGM1_, false, 0.5f);
+		isBGMPlaying_ = true;
+	} else if (!audio_->IsPlaying(soundBGMHanlde_1)) {
+		// BGMが止まったらフラグをリセット
+		isBGMPlaying_ = false;
+	}
+
 
 	wall_->Update();
 	wall2_->Update();
@@ -683,6 +711,8 @@ void GameScene::UpdateEnemy3PopCommands() {
 }
 
 void GameScene::CheckAllCollisions() {
+	audio_ = Audio::GetInstance();
+
 	KamataEngine::Vector3 posA[3]{}, posB[3]{};
 	float radiusA[3] = {0.8f, 2.0f, 0.8f}; // プレイヤーの半径（固定値）
 	float radiusB[3] = {0.8f, 2.0f, 0.8f}; // 敵弾の半径（固定値）
@@ -792,6 +822,8 @@ void GameScene::CheckAllCollisions() {
 					if (nowHertHP > 100)
 						nowHertHP = 100;
 					
+					audio_->PlayWave(soundSE_, false, 1.0f);
+
 					break;
 				case BulletType::Special:
 					
@@ -800,6 +832,8 @@ void GameScene::CheckAllCollisions() {
 					if (nowHertHP < 0)
 						nowHertHP = 0;
 					
+					audio_->PlayWave(soundSE1_, false, 1.0f);
+
 					break;
 				}
 
@@ -835,6 +869,8 @@ void GameScene::CheckAllCollisions() {
 					if (nowHertHP > 100)
 						nowHertHP = 100;
 
+					audio_->PlayWave(soundSE_, false, 1.0f);
+
 					break;
 				case BulletType::Special:
 
@@ -842,6 +878,8 @@ void GameScene::CheckAllCollisions() {
 					nowHertHP -= 30;
 					if (nowHertHP < 0)
 						nowHertHP = 0;
+
+					audio_->PlayWave(soundSE1_, false, 1.0f);
 
 					break;
 				}
@@ -876,13 +914,18 @@ void GameScene::CheckAllCollisions() {
 					nowHertHP -= 30;
 					if (nowHertHP < 0)
 						nowHertHP = 0;
-					break;
 
+					audio_->PlayWave(soundSE1_, false, 1.0f);
+
+					break;
 				case BulletType::Special:
 					// ハートのHPを増やす
 					nowHertHP += 10;
 					if (nowHertHP > 100)
 						nowHertHP = 100;
+
+					audio_->PlayWave(soundSE_, false, 1.0f);
+
 					break;
 				}
 

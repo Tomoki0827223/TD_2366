@@ -44,9 +44,12 @@ public:
 	bool IsDead() const { return isDead_; } // HPがゼロになったかどうかをチェッ
 
 private:
-	
+
+
 	void Attack();
 
+	uint32_t soundSE2_ = 0;
+	uint32_t soundSE3_ = 0;
 
 	Enemy* enemy_ = nullptr;
 	Enemy2* enemy2_ = nullptr;

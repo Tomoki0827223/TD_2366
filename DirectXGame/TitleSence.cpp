@@ -26,6 +26,16 @@ void TitleSence::Initialize() {
 
 	Timer_ = 0.0f;
 
+	soundSE_ = audio_->LoadWave("audio/enter.wav");
+	soundSE1_ = audio_->LoadWave("audio/se.wav");
+	//soundBGM_ = audio_->LoadWave("audio/title.wav");
+
+	//// BGMが再生中でない場合にのみ再生
+	// if (!isBGMPlaying_) {
+	//	audio_->PlayWave(soundBGM_, true, 0.5f);
+	//	isBGMPlaying_ = true;
+	// }
+
 	// 天球を生成
 	skydome_ = new Skydome_Sence();
 	modelSkydome_ = KamataEngine::Model::CreateFromOBJ("skydome", true);
@@ -52,30 +62,33 @@ void TitleSence::InitializeSprites() {
 }
 
 void TitleSence::Update() {
-	
+
+	//// BGMが再生されていない場合のみ再生
+	//if (!audio_->IsPlaying(soundBGM_)) {
+	//	audio_->PlayWave(soundBGM_, true, 0.5f);
+	//}
+
 	// キー入力によるシーンの遷移
-	if (KamataEngine::Input::GetInstance()->TriggerKey(DIK_SPACE)) {
-		// 現在のスプライトが textureHandle2_ の場合のみシーン遷移
+	if (input_->TriggerKey(DIK_SPACE)) {
+		audio_->PlayWave(soundSE_);
 		if (sprites[currentSpriteIndex] == sprite2_) {
 			isFinished_ = true;
 		}
-	}
-
-	// キー入力によるシーンの遷移
-	if (KamataEngine::Input::GetInstance()->TriggerKey(DIK_SPACE)) {
-		// 現在のスプライトが textureHandle2_ の場合のみシーン遷移
 		if (sprites[currentSpriteIndex] == sprite_) {
 			isGameFinished_ = true;
 		}
 	}
 
-	// 上下の矢印キー入力によるスプライトの切り替え
+	// 上下の矢印キーでスプライト切り替え
 	if (input_->TriggerKey(DIK_UP)) {
 		currentSpriteIndex = (currentSpriteIndex - 1 + sprites.size()) % sprites.size();
+		audio_->PlayWave(soundSE1_);
 	} else if (input_->TriggerKey(DIK_DOWN)) {
 		currentSpriteIndex = (currentSpriteIndex + 1) % sprites.size();
+		audio_->PlayWave(soundSE1_);
 	}
 }
+
 
 
 void TitleSence::Draw() {
@@ -108,4 +121,10 @@ void TitleSence::Draw() {
 	KamataEngine::Sprite::PostDraw();
 
 #pragma endregion
+
 }
+
+//void TitleSence::StopBGM() {
+//	audio_->StopWave(soundBGM_);
+//	isBGMPlaying_ = false;
+//}

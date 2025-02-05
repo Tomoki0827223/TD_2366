@@ -22,6 +22,8 @@ void Select_Stage::Initialize() {
 	skydome_ = new Skydome_Sence();
 	
 	modelSkydome_ = KamataEngine::Model::CreateFromOBJ("skydome", true);
+	
+	soundSE_ = audio_->LoadWave("audio/enter.wav");
 
 	// 天球を初期化
 	skydome_->Initialize(modelSkydome_, &camera_);
@@ -32,6 +34,9 @@ void Select_Stage::Initialize() {
 
 void Select_Stage::Update() {
 	if (input_->TriggerKey(DIK_SPACE)) {
+
+		audio_->PlayWave(soundSE_);
+
 		finished_ = true;
 		StageNumber_ = 0;
 		skydome_->Update();
