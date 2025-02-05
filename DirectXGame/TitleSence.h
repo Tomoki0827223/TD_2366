@@ -9,6 +9,7 @@
 #include <KamataEngine.h>
 
 
+
 /// <summary>
 /// タイトルシーン
 /// </summary>
@@ -32,7 +33,15 @@ public:
 	/// </summary>
 	void Draw();
 
-	bool IsFinished() const { return finished_; }
+	bool IsSelectFinished() const { return isFinished_; }
+	bool IsGameFinished() const { return isGameFinished_; }
+
+	// 現在表示されているスプライトを管理する変数
+	size_t currentSpriteIndex = 0;
+	std::vector<KamataEngine::Sprite*> sprites;
+
+	// スプライトの初期化メソッド
+	void InitializeSprites();
 
 private:
 	// 最初の角度[度]
@@ -44,7 +53,8 @@ private:
 	// タイマー
 	float Timer_ = 0.0f;
 
-	bool finished_ = false;
+	bool isFinished_ = false;
+	bool isGameFinished_ = false;
 	KamataEngine::DirectXCommon* dxCommon_ = nullptr;
 	KamataEngine::WorldTransform titleWorldTransform_;
 	KamataEngine::WorldTransform titleWorldTransformFont_;
@@ -55,6 +65,12 @@ private:
 	KamataEngine::Model* TitleSkydome_ = nullptr;
 	uint32_t textureHandle_ = 0;
 	KamataEngine::Sprite* sprite_ = nullptr;
+	uint32_t textureHandle2_ = 0;
+	KamataEngine::Sprite* sprite2_ = nullptr;
+	uint32_t textureHandle3_ = 0;
+	KamataEngine::Sprite* sprite3_ = nullptr;
+	uint32_t textureHandle4_ = 0;
+	KamataEngine::Sprite* sprite4_ = nullptr;
 	// 天球
 	Skydome_Sence* skydome_ = nullptr;
 	

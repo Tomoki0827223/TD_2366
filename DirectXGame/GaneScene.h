@@ -44,7 +44,11 @@ public:
 	void Enemy3Spawn(const Vector3& position);
 
 	int32_t timer = 0;
+	int32_t timer1 = 0;
+	int32_t timer2 = 0;
 	bool timerflag = true;
+	bool timerflag1 = true;
+	bool timerflag2 = true;
 
 	
     bool IsFinished() const { return isFinished_; }
@@ -64,7 +68,7 @@ private:
 	Wall* wall_ = nullptr;
 	Wall* wall2_ = nullptr;
 
-	Vector3 playerPos = {0, -4, 20};
+	Vector3 playerPos = {0, -4, 15};
 	Vector3 RailCamerPos = {0, 0, 0};
 	Vector3 RailCamerRad = {0, 0, 0};
 
@@ -111,7 +115,7 @@ private:
 	std::list<Enemy3*> enemies3_;
 
 	bool isFinished_ = false;
-	float elapsedTime_ = 120.0f; // 経過時間
+	float elapsedTime_ = 90.0f; // 経過時間
 
 	bool isOverFinished_ = false;
 	bool isGameOver_ = false;  // ゲームオーバーのフラグ
@@ -133,6 +137,12 @@ private:
 	uint32_t hertTextureHandle_ = 0;
 	Sprite* hertSprite2_ = nullptr;
 	uint32_t hertTextureHandle2_ = 0;
+	Sprite* hertSprite3_ = nullptr;
+	uint32_t hertTextureHandle3_ = 0;
+	Sprite* hertSprite4_ = nullptr;
+	uint32_t hertTextureHandle4_ = 0;
+	Sprite* hertSprite5_ = nullptr;
+	uint32_t hertTextureHandle5_ = 0;
 
 	//// 追加　
 	//bool isInvisible_ = false;

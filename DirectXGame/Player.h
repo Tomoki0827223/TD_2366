@@ -6,6 +6,7 @@
 #include "PlayerBullet.h"
 #include "PlayerBullet2.h"
 #include "AABB.h"
+#include "affine.h"
 #include <algorithm>
 #include <cassert>
 
@@ -16,7 +17,6 @@ class EnemyBullet;
 
 class Player {
 public:
-	enum class BulletType { Normal, Special, Type2 };
 
 	~Player();
 	void Initialize(
@@ -25,7 +25,8 @@ public:
 
 	void OnCollision(const EnemyBullet* enemyBullet);
 	void OnCollision(const Enemy* enemy);
-	
+
+
 	void Update();
 	void Draw(const KamataEngine::Camera& camera);
 	void SwitchBulletType(BulletType type);
@@ -67,8 +68,8 @@ private:
 	static constexpr float kWidth = 1.0f;
 	static constexpr float kHeight = 1.0f;
 
-	const float kScreenLeft = -13.0f;
-	const float kScreenRight = 13.0f;
+	const float kScreenLeft = -10.0f;
+	const float kScreenRight = 10.0f;
 	const float kScreenTop = 10.0f;
 	const float kScreenBottom = -10.0f;
 };

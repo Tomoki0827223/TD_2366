@@ -4,13 +4,14 @@
 
 PlayerBullet::~PlayerBullet() {}
 
-void PlayerBullet::Initialize(KamataEngine::Model* model, const KamataEngine::Vector3& position, const KamataEngine::Vector3& velocity) {
+void PlayerBullet::Initialize(KamataEngine::Model* model, const KamataEngine::Vector3& position, const KamataEngine::Vector3& velocity, BulletType bulletType) {
 
 	assert(model);
 	model_ = model;
 	worldtransfrom_.translation_ = position;
 	worldtransfrom_.Initialize();
 	velocity_ = velocity;
+	bulletType_ = bulletType;
 }
 
 // ワールド座標を取得

@@ -67,7 +67,8 @@ void GameScene::Initialize() {
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
 	modelEnemy_ = Model::CreateFromOBJ("chocolate", true);
 	modelEnemy2_ = Model::CreateFromOBJ("Candy", true);
-	modelEnemy3_ = Model::CreateFromOBJ("enemy", true);
+	modelEnemy2_ = Model::CreateFromOBJ("Ball", true);
+	modelEnemy3_ = Model::CreateFromOBJ("math", true);
 
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 	modelSkydome2_ = Model::CreateFromOBJ("skydome2", true);
@@ -96,10 +97,16 @@ void GameScene::Initialize() {
 	sprite_ = Sprite::Create(textureHandle_, {100, 50});
 	sprite2_ = Sprite::Create(textureHandle2_, {100, 50});
 
-	hertTextureHandle_ = TextureManager::Load("hert.png");
+	hertTextureHandle_ = TextureManager::Load("Hert/hert0.png");
 	hertSprite_ = Sprite::Create(hertTextureHandle_, {900, 50});
-	hertTextureHandle2_ = TextureManager::Load("hertHP.png");
+	hertTextureHandle2_ = TextureManager::Load("Hert/hert20.png");
 	hertSprite2_ = Sprite::Create(hertTextureHandle2_, {900, 50});
+	hertTextureHandle3_ = TextureManager::Load("Hert/hert50.png");
+	hertSprite3_ = Sprite::Create(hertTextureHandle3_, {900, 50});
+	hertTextureHandle4_ = TextureManager::Load("Hert/hert80.png");
+	hertSprite4_ = Sprite::Create(hertTextureHandle4_, {900, 50});
+	hertTextureHandle5_ = TextureManager::Load("Hert/hert100.png");
+	hertSprite5_ = Sprite::Create(hertTextureHandle5_, {900, 50});
 
 
 	// ビットマップフォントの読み込み
@@ -120,9 +127,9 @@ void GameScene::Initialize() {
 
 
 	// 軸方向表示の表示を有効にする
-	KamataEngine::AxisIndicator::GetInstance()->SetVisible(true);
+	//KamataEngine::AxisIndicator::GetInstance()->SetVisible(true);
 	// 軸方向表示が参照するビュープロジェクションを指定する（アドレス渡し）
-	KamataEngine::AxisIndicator::GetInstance()->SetTargetCamera(&camera_);
+	//KamataEngine::AxisIndicator::GetInstance()->SetTargetCamera(&camera_);
 
 	// Camera
 	railCamera_ = new RailCamera();
@@ -131,6 +138,7 @@ void GameScene::Initialize() {
 
 	LoadEnemyPopData();
 	LoadEnemy2PopData();
+	LoadEnemy3PopData();
 }
 
 
@@ -141,7 +149,7 @@ void GameScene::Update() {
 	ground_->Update();
 
 	// 経過時間を更新
-	elapsedTime_ -= 1.0f / 24.0f; // 1フレームあたりの時間を加算 (60FPSの場合)
+	elapsedTime_ -= 1.0f / 60.0f; // 1フレームあたりの時間を加算 (60FPSの場合)
 
 	// 60秒経過したらゲームクリア
 	if (elapsedTime_ <= 0.0f) {
@@ -154,6 +162,11 @@ void GameScene::Update() {
 		isGameOver_ = true;
 		return;
 	
+	}
+
+	if (nowHertHP <= 0) {
+		isGameOver_ = true;
+		return;
 	}
 
 	// プレイヤーの位置を取得
@@ -257,16 +270,9 @@ void GameScene::Update() {
 		return false;
 	});
 
-	Vector2 size = sprite2_->GetSize();
-	size.x = nowHp / maxHp * width;
-	size.y = 10.0f;
-
-	Vector2 hertSize = hertSprite2_->GetSize();
-	hertSize.x = nowHertHP / maxHertHP * hertWidth;
-	hertSize.y = 256.0f;
-
-	sprite2_->SetSize(size);
-	hertSprite2_->SetSize(hertSize);
+	//Vector2 size = sprite2_->GetSize();
+	//size.x = nowHp / maxHp * width;
+	//size.y = 10.0f;
 
 	//// 無敵状態のカウントダウン
 	//if (isInvisible_) {
@@ -284,6 +290,12 @@ void GameScene::Update() {
 	camera_.matView = railCamera_->GetViewProjection().matView;
 	camera_.matProjection = railCamera_->GetViewProjection().matProjection;
 	camera_.TransferMatrix();
+	
+	//// ImGui ウィンドウを作成して wall と wall2 の位置を変更
+	//ImGui::Begin("Wall Position");
+	//ImGui::SliderFloat3("Wall 1 Position", &WallPos.x, -10.0f, 10.0f);
+	//ImGui::SliderFloat3("Wall 2 Position", &WallPos2.x, -10.0f, 10.0f);
+	//ImGui::End();
 }
 
 void GameScene::Draw() {
@@ -333,7 +345,7 @@ void GameScene::Draw() {
 	//modelGround_->Draw(worldTransform_, camera_);
 
 	// 昼夜変更
-	if (elapsedTime_ <= 20.0f) {
+	if (elapsedTime_ <= 40.0f) {
 		skydome2_->Draw();
 	} else {
 		skydome_->Draw();
@@ -354,15 +366,25 @@ void GameScene::Draw() {
 
 	Sprite::PreDraw(commandList);
 
-	sprite_->Draw();
-	sprite2_->Draw();
-	hertSprite_->Draw();
-	hertSprite2_->Draw();
+	//sprite_->Draw();
+	//sprite2_->Draw();
+
+	if (nowHertHP > 80) {
+		hertSprite5_->Draw();
+	} else if (nowHertHP > 50) {
+		hertSprite4_->Draw();
+	} else if (nowHertHP > 20) {
+		hertSprite3_->Draw();
+	} else if (nowHertHP > 0) {
+		hertSprite2_->Draw();
+	} else {
+		hertSprite_->Draw();
+	}
 
 	// 制限時間の描画
 	DrawText();
 
-	DrawHertText();
+	//DrawHertText();
 
 	Sprite::PostDraw();
 
@@ -504,11 +526,11 @@ void GameScene::LoadEnemy2PopData() {
 void GameScene::UpdateEnemy2PopCommands() {
 
 	// 待機処理
-	if (timerflag) {
-		timer--;
-		if (timer <= 0) {
+	if (timerflag1) {
+		timer1--;
+		if (timer1 <= 0) {
 			// 待機完了
-			timerflag = false;
+			timerflag1 = false;
 		}
 		return;
 	}
@@ -558,8 +580,8 @@ void GameScene::UpdateEnemy2PopCommands() {
 
 			// 待機開始
 
-			timerflag = true;
-			timer = waitTime;
+			timerflag1 = true;
+			timer1 = waitTime;
 
 			// コマンドループを抜ける
 			break;
@@ -597,11 +619,11 @@ void GameScene::LoadEnemy3PopData() {
 void GameScene::UpdateEnemy3PopCommands() {
 
 	// 待機処理
-	if (timerflag) {
-		timer--;
-		if (timer <= 0) {
+	if (timerflag2) {
+		timer2--;
+		if (timer2 <= 0) {
 			// 待機完了
-			timerflag = false;
+			timerflag2 = false;
 		}
 		return;
 	}
@@ -651,8 +673,8 @@ void GameScene::UpdateEnemy3PopCommands() {
 
 			// 待機開始
 
-			timerflag = true;
-			timer = waitTime;
+			timerflag2 = true;
+			timer2 = waitTime;
 
 			// コマンドループを抜ける
 			break;
@@ -668,37 +690,37 @@ void GameScene::CheckAllCollisions() {
 	// 自弾
 	const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();
 
-#pragma region プレイヤーと敵キャラの当たり判定
-
-	for (Enemy* enemy : enemies_) {
-		// 敵の座標
-		posA[1] = enemy->GetWorldPosition();
-
-		// プレイヤーの座標
-		posB[1] = player_->GetWorldPosition();
-
-		// 2つの球の中心間の距離の二乗を計算
-		float distanceSquared = (posA[1].x - posB[1].x) * (posA[1].x - posB[1].x) + (posA[1].y - posB[1].y) * (posA[1].y - posB[1].y) + (posA[1].z - posB[1].z) * (posA[1].z - posB[1].z);
-
-		// 半径の合計の二乗
-		float combinedRadiusSquared = (radiusA[1] + radiusB[1]) * (radiusA[1] + radiusB[1]);
-
-		if (distanceSquared <= combinedRadiusSquared) {
-
-			nowHp -= rand() % 11 + 1;
-
-			if (nowHp <= 0) {
-				nowHp = 0;
-				player_->IsDead();
-
-				// 衝突時の処理
-				player_->OnCollision(enemy);
-				enemy->OnCollision(player_);
-			}
-		}
-	}
-
-#pragma endregion
+//#pragma region プレイヤーと敵キャラの当たり判定
+//
+//	for (Enemy* enemy : enemies_) {
+//		// 敵の座標
+//		posA[1] = enemy->GetWorldPosition();
+//
+//		// プレイヤーの座標
+//		posB[1] = player_->GetWorldPosition();
+//
+//		// 2つの球の中心間の距離の二乗を計算
+//		float distanceSquared = (posA[1].x - posB[1].x) * (posA[1].x - posB[1].x) + (posA[1].y - posB[1].y) * (posA[1].y - posB[1].y) + (posA[1].z - posB[1].z) * (posA[1].z - posB[1].z);
+//
+//		// 半径の合計の二乗
+//		float combinedRadiusSquared = (radiusA[1] + radiusB[1]) * (radiusA[1] + radiusB[1]);
+//
+//		if (distanceSquared <= combinedRadiusSquared) {
+//
+//			nowHp -= rand() % 11 + 1;
+//
+//			if (nowHp <= 0) {
+//				nowHp = 0;
+//				player_->IsDead();
+//
+//				// 衝突時の処理
+//				player_->OnCollision(enemy);
+//				enemy->OnCollision(player_);
+//			}
+//		}
+//	}
+//
+//#pragma endregion
 
 #pragma region 自キャラと敵弾の当たり判定
 
@@ -760,12 +782,25 @@ void GameScene::CheckAllCollisions() {
 
 			if (distanceSquared <= combinedRadiusSquared) {
 
-				// ハートのHPを増やす
-				if (nowHertHP < 100) {
-					nowHertHP += 10; // 増やす量は適宜調整
-					if (nowHertHP > 100) {
-						nowHertHP = 100; // HPが100を超えないように制限
-					}
+				// **実際に当たった弾の種類を取得**
+				BulletType bulletType = bullet->GetBulletType();
+
+				switch (bulletType) {
+				case BulletType::Normal:
+					// ハートのHPを増やす
+					nowHertHP += 10;
+					if (nowHertHP > 100)
+						nowHertHP = 100;
+					
+					break;
+				case BulletType::Special:
+					
+					// ハートのHPを減らす
+					nowHertHP -= 30;
+					if (nowHertHP < 0)
+						nowHertHP = 0;
+					
+					break;
 				}
 
 				enemy->OnCollision();
@@ -790,12 +825,25 @@ void GameScene::CheckAllCollisions() {
 
 			if (distanceSquared <= combinedRadiusSquared) {
 
-				// ハートのHPを増やす
-				if (nowHertHP < 100) {
-					nowHertHP += 10; // 増やす量は適宜調整
-					if (nowHertHP > 100) {
-						nowHertHP = 100; // HPが100を超えないように制限
-					}
+				// **実際に当たった弾の種類を取得**
+				BulletType bulletType = bullet->GetBulletType();
+
+				switch (bulletType) {
+				case BulletType::Normal:
+					// ハートのHPを増やす
+					nowHertHP += 10;
+					if (nowHertHP > 100)
+						nowHertHP = 100;
+
+					break;
+				case BulletType::Special:
+
+					// ハートのHPを減らす
+					nowHertHP -= 30;
+					if (nowHertHP < 0)
+						nowHertHP = 0;
+
+					break;
 				}
 
 				enemy->OnCollision();
@@ -810,7 +858,7 @@ void GameScene::CheckAllCollisions() {
 #pragma region 自弾と敵3キャラの当たり判定
 
 	for (Enemy3* enemy : enemies3_) {
-		// 敵
+		// 敵の位置
 		posA[1] = enemy->GetWorldPosition();
 
 		for (PlayerBullet* bullet : playerBullets) {
@@ -819,6 +867,25 @@ void GameScene::CheckAllCollisions() {
 			float combinedRadiusSquared = (radiusA[2] + radiusB[2]) * (radiusA[2] + radiusB[2]);
 
 			if (distanceSquared <= combinedRadiusSquared) {
+				// **実際に当たった弾の種類を取得**
+				BulletType bulletType = bullet->GetBulletType();
+
+				switch (bulletType) {
+				case BulletType::Normal:
+					// ハートのHPを減らす
+					nowHertHP -= 30;
+					if (nowHertHP < 0)
+						nowHertHP = 0;
+					break;
+
+				case BulletType::Special:
+					// ハートのHPを増やす
+					nowHertHP += 10;
+					if (nowHertHP > 100)
+						nowHertHP = 100;
+					break;
+				}
+
 				enemy->OnCollision();
 				bullet->OnCollision();
 				enemy->SetDead();
@@ -826,7 +893,9 @@ void GameScene::CheckAllCollisions() {
 		}
 	}
 
+
 #pragma endregion
+
 
 #pragma region 自弾と敵弾の当たり判定
 

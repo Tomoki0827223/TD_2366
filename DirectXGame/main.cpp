@@ -56,7 +56,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// ゲームウィンドウの作成
 	win = WinApp::GetInstance();
-	win->CreateGameWindow(L"Test");
+	win->CreateGameWindow(L"2366_スキキライ3D");
 
 	// DirectX初期化処理
 	dxCommon = DirectXCommon::GetInstance();
@@ -156,22 +156,31 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 void ChangeScene() {
 	switch (scene) {
 	case Scene::kTitleScene:
-		if (titleScene->IsFinished()) {
+		if (titleScene && titleScene->IsSelectFinished()) {
 			delete titleScene;
 			titleScene = nullptr;
 			scene = Scene::kSelectStage;
 			selectStage = new Select_Stage();
 			selectStage->Initialize();
 		}
+		
+		if (titleScene && titleScene->IsGameFinished()) {
+			delete titleScene;
+			titleScene = nullptr;
+			scene = Scene::kGameScene;
+			gameScene = new GameScene();
+			gameScene->Initialize();
+		}
+
 		break;
 	case Scene::kSelectStage:
 		if (selectStage->IsFinished()) {
 			mapNumber = selectStage->GetStageNumber();
 			delete selectStage;
 			selectStage = nullptr;
-			scene = Scene::kGameScene;
-			gameScene = new GameScene();
-			gameScene->Initialize();
+			scene = Scene::kTitleScene;
+			titleScene = new TitleSence();
+			titleScene->Initialize();
 		}
 		break;
 	case Scene::kGameScene:

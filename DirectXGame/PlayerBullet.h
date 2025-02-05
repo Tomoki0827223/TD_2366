@@ -2,11 +2,14 @@
 #include <3d/Camera.h>
 #include <3d/Model.h>
 #include <3d/WorldTransform.h>
+#include "affine.h"
 class PlayerBullet {
 public:
-	void Initialize(KamataEngine::Model* model, const KamataEngine::Vector3& position, const KamataEngine::Vector3& velocity);
+	void Initialize(KamataEngine::Model* model, const KamataEngine::Vector3& position, const KamataEngine::Vector3& velocity, BulletType bulletType);
 
 	KamataEngine::Vector3 GetWorldPosition();
+
+	BulletType GetBulletType() const { return bulletType_; }
 
 	void Update();
 
@@ -33,4 +36,6 @@ private:
 	int32_t deathTimer_ = kLifeTime;
 	// デスフラグ
 	bool isDead_ = false;
+
+	BulletType bulletType_;
 };

@@ -26,7 +26,7 @@ void Select_Stage::Initialize() {
 	// 天球を初期化
 	skydome_->Initialize(modelSkydome_, &camera_);
 
-	textureHandle_ = KamataEngine::TextureManager::Load("alStart.png");
+	textureHandle_ = KamataEngine::TextureManager::Load("ingame/guide.png");
 	sprite_ = KamataEngine::Sprite::Create(textureHandle_, {0, 0});
 }
 
@@ -35,17 +35,6 @@ void Select_Stage::Update() {
 		finished_ = true;
 		StageNumber_ = 0;
 		skydome_->Update();
-		// std::cout << "ステージ0が選択されました。" << std::endl;
-	} else if (input_->TriggerKey(DIK_2)) {
-		finished_ = true;
-		StageNumber_ = 1;
-		skydome_->Update();
-		// std::cout << "ステージ1が選択されました。" << std::endl;
-	} else if (input_->TriggerKey(DIK_3)) {
-		finished_ = true;
-		StageNumber_ = 2;
-		skydome_->Update();
-		// std::cout << "ステージ2が選択されました。" << std::endl;
 	}
 }
 
